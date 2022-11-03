@@ -68,7 +68,7 @@ export function GoalManager(props: Props) {
     }
     dispatch(updateGoalRedux(updatedGoal))
 
-    // Task 3 -- Continue Here
+    updateGoalApi(props.goal.id, updatedGoal)
   }
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
