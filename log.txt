@@ -1,0 +1,17 @@
+commit dd884739548f35e02813dd43d623f923abaaf57c
+Author: Giacomo Pessotto <giacomopesso@gmail.com>
+Date:   Thu Nov 3 16:19:53 2022 +0000
+
+    final
+
+commit 76900d057988b7b9e27fe212f4453fc6fe43aabb
+Author: Giacomo Pessotto <giacomopesso@gmail.com>
+Date:   Thu Nov 3 14:59:52 2022 +0000
+
+    Emoji Picker - Task 2
+
+commit 73f96cf7b0643bed424ba8dcd837ae1e26d4dfcc
+Author: mramotar <mramotar@dropbox.com>
+Date:   Mon Oct 31 10:19:55 2022 -0400
+
+    Starter
