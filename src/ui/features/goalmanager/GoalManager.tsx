@@ -20,6 +20,9 @@ type Props = { goal: Goal }
 // Implement Emoji picker
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
+// Implement AddIconButton
+type AddIconButtonContainerProps = { hasIcon: boolean }
+
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
 
@@ -84,7 +87,13 @@ export function GoalManager(props: Props) {
   
   const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
   
-  const hasIcon = () => icon != null
+  const [icon, setIcon] = useState<string | null>(null)
+
+  useEffect(() => {
+    setIcon(props.goal.icon)
+  }, [props.goal.id, props.goal.icon])
+  
+  const hasIcon = () => icon != null // use by Emojipicker, AddIconButton and GoalIconContainer
   
   const pickEmojiOnClick = (emoji: BaseEmoji, event: MouseEvent) => {
     event.stopPropagation() // Stop event propogation
@@ -104,6 +113,12 @@ export function GoalManager(props: Props) {
   
     // Update database so emoji changes are reflected into the database
     updateGoalApi(props.goal.id, updatedGoal)
+  }
+  
+  // Opens the emoji picker component
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
   }
 
   return (
@@ -146,6 +161,14 @@ export function GoalManager(props: Props) {
         >
         <EmojiPicker onClick = {pickEmojiOnClick} />
       </EmojiPickerContainer>
+      
+      {/* Add transparent icon button */}
+      <AddIconButtonContainer hasIcon = {hasIcon()}>
+        <TransparentButton onClick={addIconOnClick}>
+          <FontAwesomeIcon icon={faSmile} size="2x" />
+          <AddIconButtonText>Add icon</AddIconButtonText>
+        </TransparentButton>
+      </AddIconButtonContainer>
       
       
     </GoalManagerContainer>
