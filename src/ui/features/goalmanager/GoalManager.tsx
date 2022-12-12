@@ -23,6 +23,9 @@ type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 // Implement AddIconButton
 type AddIconButtonContainerProps = { hasIcon: boolean }
 
+// Implement GoalIcon
+type GoalIconContainerProps = { shouldShow: boolean }
+
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
 
@@ -120,6 +123,8 @@ export function GoalManager(props: Props) {
     event.stopPropagation()
     setEmojiPickerIsOpen(true)
   }
+  
+  const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
   return (
     <GoalManagerContainer>
@@ -169,6 +174,11 @@ export function GoalManager(props: Props) {
           <AddIconButtonText>Add icon</AddIconButtonText>
         </TransparentButton>
       </AddIconButtonContainer>
+      
+      {/* Display Goal Icon */}
+      <GoalIconContainer shouldShow={hasIcon()}>
+        <GoalIcon icon={goal.icon} onClick={addIconOnClick} />
+      </GoalIconContainer>
       
       
     </GoalManagerContainer>
@@ -253,4 +263,14 @@ const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
   position: absolute;
   top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
   left: 0;
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+`
+
+const AddIconButtonText = styled.span`
 `
