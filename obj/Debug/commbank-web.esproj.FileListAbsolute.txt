@@ -1,0 +1,2 @@
+F:\Study\vInternship-1\CommBank-Web\obj\Debug\commbank-web.esproj.SuggestedBindingRedirects.cache
+F:\Study\vInternship-1\CommBank-Web\obj\Debug\commbank-web.esproj.CoreCompileInputs.cache
