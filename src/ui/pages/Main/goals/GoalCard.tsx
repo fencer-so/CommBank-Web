@@ -11,6 +11,10 @@ import { Card } from '../../../components/Card'
 
 type Props = { id: string }
 
+const Icon = styled.h1`
+  font-size: 5.5rem;
+`
+
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
 
@@ -28,7 +32,8 @@ export default function GoalCard(props: Props) {
   return (
     <Container key={goal.id} onClick={onClick}>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
-      <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+          <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+          <Icon>{goal.icon}</Icon>
     </Container>
   )
 }
