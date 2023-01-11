@@ -87,6 +87,28 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+  const pickEmojiOnClick = () => (emoji: BaseEmoji, event: MouseEvent) => {
+    setEmojiPickerIsOpen(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+}
+
+function hasIcon() {
+  throw new Error('Function not implemented.')
+}
+
+function pickDateOnChange(date: MaterialUiPickersDate): void {
+  throw new Error('Function not implemented.')
+}
 
   return (
     <GoalManagerContainer>
@@ -190,6 +212,7 @@ const FieldContainer = styled.div`
     color: rgba(174, 174, 174, 1);
   }
 `
+
 const StringValue = styled.h1`
   font-size: 1.8rem;
   font-weight: bold;
@@ -207,3 +230,7 @@ const StringInput = styled.input`
 const Value = styled.div`
   margin-left: 2rem;
 `
+function setEmojiPickerIsOpen(arg0: boolean) {
+  throw new Error('Function not implemented.')
+}
+
