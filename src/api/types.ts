@@ -64,5 +64,11 @@ export enum ApplicationStatus {
   Rejected,
 }
 
+export interface Goal {
+  // ...
+
+  icon: string | null
+}
+
 export type ModalContent = Goal
 export type ModalType = 'Goal'
