@@ -11,10 +11,47 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { BaseEmoji, Picker } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
+import 'emoji-mart/css/emoji-mart.css'
+import { selectMode } from '../../../store/themeSlice'
+import EmojiPicker from './EmojiPicker'
 
-type Props = { goal: Goal }
+
+type Props = { goal: Goal; onClick: (emoji: BaseEmoji, event: React.MouseEvent) => void; isOpen: boolean; hasIcon: boolean}
+
 export function GoalManager(props: Props) {
+  
+  const theme = useAppSelector(selectMode)
+  
   const dispatch = useAppDispatch()
+
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
+
+  const hasIcon = () => icon != null
+
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: MouseEvent) => {
+    // TODO(TASK-2) Stop event propogation
+    // TODO(TASK-2) Set icon locally
+    // TODO(TASK-2) Close emoji picker
+    // TODO(TASK-2) Create updated goal locally
+    // TODO(TASK-2) Update Redux store
+    // TODO(TASK-3) Update database
+    event.stopPropagation()
+
+    setIcon(emoji.native)
+    setEmojiPickerIsOpen(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+  }
 
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
@@ -75,8 +112,11 @@ export function GoalManager(props: Props) {
     }
   }
 
+  
+
   return (
-    <GoalManagerContainer>
+    
+    <><GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -106,9 +146,17 @@ export function GoalManager(props: Props) {
           <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
         </Value>
       </Group>
-    </GoalManagerContainer>
+    </GoalManagerContainer><EmojiPickerContainer
+      isOpen={emojiPickerIsOpen}
+      hasIcon={hasIcon()}
+      onClick={(event) => event.stopPropagation()}
+    >
+        <EmojiPicker onClick={pickEmojiOnClick} />
+      </EmojiPickerContainer></>
+      
   )
 }
+
 
 type FieldProps = { name: string; icon: IconDefinition }
 type AddIconButtonContainerProps = { shouldShow: boolean }
@@ -182,3 +230,14 @@ const StringInput = styled.input`
 const Value = styled.div`
   margin-left: 2rem;
 `
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
+  left: 0;
+`
+
+function setIcon(native: string) {
+  throw new Error('Function not implemented.')
+}
