@@ -14,7 +14,7 @@ export default function AddIconButton(props: Props) {
     <Container>
       <TransparentButton onClick={props.onClick}>
         <FontAwesomeIcon icon={faSmile} size="2x" />
-        <Text>Add icon</Text>
+        <Text>Add Icon</Text>
       </TransparentButton>
     </Container>
   )
