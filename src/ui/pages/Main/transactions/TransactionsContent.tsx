@@ -9,7 +9,7 @@ export default function TransactionsContent(props: Props) {
   return (
     <>
       {props.transactions.sort(sortByDateDesc).map((transaction) => (
-        <TransactionItem transaction={transaction} />
+        <TransactionItem key={transaction.id} transaction={transaction} />
       ))}
     </>
   )
