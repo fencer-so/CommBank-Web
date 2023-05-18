@@ -46,16 +46,10 @@ export async function createGoal(): Promise<Goal | null> {
 export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
   try {
 
-    //http://localhost:5203/api/Goal/62a3f587102e921da1253d32
-    //mongodb+srv://<myusername>:<password>@cluster0.blxow4a.mongodb.net/
-    //const goalId = '62a3f587102e921da1253d32'; //For Testing, First Goal with Icon from Task 1
-
-    //https://ap-southeast-2.aws.data.mongodb-api.com/app/data-gzfux/endpoint/data/v1
-    //const API_ROOT = 'https://ap-southeast-2.aws.data.mongodb-api.com/app/data-gzfux/endpoint/data/v1'; //This is the real address
     
+    //const API_ROOT = 'https://ap-southeast-2.aws.data.mongodb-api.com/app/data-gzfux/endpoint/data/v1'; //This is the real address
     //await axios.put('http://localhost:5203/api/Goal/62a3f587102e921da1253d32', updatedGoal) //Manual test like task 1
-    //await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
-
+  
     const API_ROOT = 'http://localhost:5203'; //This is for testing based on our localhost server from task
     await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
 
