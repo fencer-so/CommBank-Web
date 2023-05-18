@@ -19,6 +19,7 @@ export interface Application {
 
 export interface Goal {
   id: string
+  icon: string | null
   name: string
   targetAmount: number
   balance: number
