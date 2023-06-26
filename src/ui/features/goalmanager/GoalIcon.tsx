@@ -14,6 +14,6 @@ export default function GoalIcon(props: Props) {
 }
 
 const Icon = styled.h1`
-  font-size: 6rem;
+  font-size: 5.5rem;
   cursor: pointer;
 `
