@@ -11,6 +11,12 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { BaseEmoji } from 'emoji-mart'
+import { setMilliseconds } from 'date-fns'
+import EmojiPicker from '../../components/EmojiPicker'
+import GoalIcon from './GoalIcon'
+import { TransparentButton } from '../../components/TransparentButton'
+import { faSmile } from '@fortawesome/free-solid-svg-icons'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,7 +27,39 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState<boolean>(false);
+  const [icon, setIcon] = useState<string|null>(null)
 
+  const useOutsideClick = (callback: ()=>void) => {
+    const ref = React.useRef<HTMLDivElement>(null);
+  
+    useEffect(() => {
+      const handleClick = (event: MouseEvent) => {
+        if (ref.current && !ref.current.contains(event.target as Node)) {
+          callback();
+        }
+      };
+  
+      document.addEventListener('mousedown', handleClick);
+  
+      return () => {
+        document.removeEventListener('mousedown', handleClick);
+      };
+    }, [callback]);
+  
+    return ref;
+  };
+
+  const ref = useOutsideClick(() => {
+    setEmojiPickerIsOpen(false)
+  });
+  
+  useEffect(() => {
+    setIcon(props.goal.icon)
+  }, [props.goal.id, props.goal.icon])
+  
+  const hasIcon = () => icon != null;
+  
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
@@ -37,6 +75,11 @@ export function GoalManager(props: Props) {
     setName(goal.name)
   }, [goal.name])
 
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
     setName(nextName)
@@ -47,7 +90,7 @@ export function GoalManager(props: Props) {
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
   }
-
+  
   const updateTargetAmountOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextTargetAmount = parseFloat(event.target.value)
     setTargetAmount(nextTargetAmount)
@@ -75,9 +118,46 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    event.stopPropagation();
+
+    setIcon(emoji.native)
+    setEmojiPickerIsOpen(false)
+    
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+  
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      <Group>
+        <EmojiPickerContainer
+        ref={ref}
+        isOpen={emojiPickerIsOpen}
+        hasIcon={hasIcon()}
+        onClick={(event) => event.stopPropagation()}
+        >
+          <EmojiPicker onClick={pickEmojiOnClick} />
+        </EmojiPickerContainer>
+        <AddIconButtonContainer shouldShow={!hasIcon()}>
+          <TransparentButton onClick={addIconOnClick}>
+            <Field name="Add icon" icon={faSmile} />
+          </TransparentButton>
+        </AddIconButtonContainer>
+        <GoalIconContainer shouldShow={hasIcon()}>
+          <GoalIcon icon={goal.icon} onClick={addIconOnClick} />
+        </GoalIconContainer>
+
+      </Group>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -121,6 +201,22 @@ const Field = (props: FieldProps) => (
     <FieldName>{props.name}</FieldName>
   </FieldContainer>
 )
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props)=> (props.hasIcon? '10rem': '2rem')};
+  left: 0;
+  z-index: 1;
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
 
 const GoalManagerContainer = styled.div`
   display: flex;
