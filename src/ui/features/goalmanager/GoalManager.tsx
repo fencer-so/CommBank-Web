@@ -26,12 +26,7 @@ export function GoalManager(props: Props) {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
-  }, [
-    props.goal.id,
-    props.goal.name,
-    props.goal.targetDate,
-    props.goal.targetAmount,
-  ])
+  }, [props.goal.id, props.goal.name, props.goal.targetDate, props.goal.targetAmount])
 
   useEffect(() => {
     setName(goal.name)
@@ -78,7 +73,6 @@ export function GoalManager(props: Props) {
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
-
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
         <Value>
