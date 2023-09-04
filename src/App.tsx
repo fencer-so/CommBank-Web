@@ -10,7 +10,6 @@ import { GlobalStyle } from './ui/components/GlobalStyles'
 import { DarkTheme, LightTheme } from './ui/components/Theme'
 import Main from './ui/pages/Main/Main'
 import Modal from './ui/surfaces/modal/Modal'
-// for test
 
 export default function App() {
   const mode = useAppSelector(selectMode)
