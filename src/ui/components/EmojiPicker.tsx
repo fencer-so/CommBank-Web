@@ -14,7 +14,7 @@ export default function EmojiPicker(props: Props) {
       showPreview={false}
       showSkinTones={false}
       onClick={props.onClick}
-      color="primary"
+      color="white"
     />
   )
 }
