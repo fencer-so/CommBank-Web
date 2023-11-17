@@ -13,7 +13,6 @@ import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
 import EmojiPicker from '../../components/EmojiPicker'
 import { BaseEmoji } from 'emoji-mart'
-import AddIconButton from './AddIconButton'
 import { TransparentButton } from '../../components/TransparentButton'
 // import { IconProps } from '@material-ui/core'
 
@@ -90,8 +89,8 @@ export function GoalManager(props: Props) {
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: targetAmount ?? props.goal.targetAmount,
     }
-
     dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
 
     // TODO(TASK-3) Update database
   }
@@ -128,16 +127,16 @@ export function GoalManager(props: Props) {
         </Value>
       </Group>
 
-      <IconeContainer shouldShow={hasIcon()}>
+      <IconeContainer shouldShow={true}>
         <TransparentButton onClick={addIconOnClick}>
           <FontAwesomeIcon icon={faSmile} size="2x" />
-          <IconButton shouldShow={hasIcon()}>Add icon</IconButton>
+          <IconButton shouldShow={true}>Add icon</IconButton>
         </TransparentButton>
       </IconeContainer>
 
       <EmojiPickerContainer
         isOpen={emojiPickerIsOpen}
-        hasIcon={hasIcon()}
+        hasIcon={true}
         onClick={(event) => event.stopPropagation()}
       >
         <EmojiPicker onClick={pickEmojiOnClick} />

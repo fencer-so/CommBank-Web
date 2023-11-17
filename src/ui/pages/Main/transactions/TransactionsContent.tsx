@@ -8,8 +8,8 @@ export default function TransactionsContent(props: Props) {
   if (!props.transactions) return null
   return (
     <>
-      {props.transactions.sort(sortByDateDesc).map((transaction) => (
-        <TransactionItem transaction={transaction} />
+      {props.transactions.sort(sortByDateDesc).map((transaction, i) => (
+        <TransactionItem key={i} transaction={transaction} />
       ))}
     </>
   )
