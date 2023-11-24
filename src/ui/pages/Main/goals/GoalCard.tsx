@@ -57,3 +57,4 @@ const TargetDate = styled.h4`
 `
 const Icon = styled.h1`
   font-size: 5.5rem;
+`
