@@ -11,6 +11,8 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import EmojiPicker from './EmojiPicker' // Replace with your EmojiPicker component
+
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,6 +23,7 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
@@ -121,6 +124,55 @@ const Field = (props: FieldProps) => (
     <FieldName>{props.name}</FieldName>
   </FieldContainer>
 )
+
+
+type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
+  left: 0;
+`
+
+export function GoalManager(props: Props) {
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
+  const [selectedEmoji, setSelectedEmoji] = useState<BaseEmoji | null>(null) // State for selected emoji
+
+  const hasIcon = () => selectedEmoji != null
+
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: MouseEvent) => {
+    event.stopPropagation()
+    setSelectedEmoji(emoji)
+    setEmojiPickerIsOpen(false)
+    
+    // TODO: Implement logic for setting the selected emoji locally, updating Redux store, and database (as per your TODO comments)
+  }
+
+  return (
+    // ... (other JSX elements)
+
+    <EmojiPickerContainer
+      isOpen={emojiPickerIsOpen}
+      hasIcon={hasIcon()}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <EmojiPicker onClick={pickEmojiOnClick} />
+    </EmojiPickerContainer>
+
+    // ... (other JSX elements)
+  )
+}
+
+
+
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
+  left: 0;
+`
 
 const GoalManagerContainer = styled.div`
   display: flex;
