@@ -97,12 +97,13 @@ export function GoalManager(props: Props) {
     }
   }
 
-  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => { // Change MouseEvent type here
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
     event.stopPropagation();
+  
     const updatedIcon = emoji.native;
     setSelectedEmoji(emoji);
     setEmojiPickerIsOpen(false);
-    // TODO: Implement logic for setting the selected emoji locally, updating Redux store, and database (as per your TODO comments)
+  
     const updatedGoal: Goal = {
       ...props.goal,
       icon: updatedIcon ?? props.goal.icon,
@@ -110,11 +111,20 @@ export function GoalManager(props: Props) {
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: targetAmount ?? props.goal.targetAmount,
     };
+  
     // Update Redux store
-  dispatch(updateGoalRedux(updatedGoal));
-  // TODO: Update database (TASK-3)
-  updateGoalApi(props.goal.id, updatedGoal);
-  }
+    dispatch(updateGoalRedux(updatedGoal));
+  
+    // Update database (TASK-3)
+    updateGoalApi(props.goal.id, updatedGoal).then((success) => {
+      if (success) {
+        // Update successful, you can handle further actions if needed
+      } else {
+        // Handle failure to update the goal in the database
+      }
+    });
+  };
+  
 
   
 
