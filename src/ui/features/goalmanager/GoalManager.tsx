@@ -11,6 +11,8 @@ import DatePicker from '../../components/DatePicker'
 import EmojiPicker from '../../components/EmojiPicker' // Replace with your EmojiPicker component
 import { Theme } from '../../components/Theme'
 import { BaseEmoji } from 'emoji-mart'
+import GoalIcon from '../goalmanager/GoalIcon';
+
 
 type Props = { goal: Goal }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
@@ -30,6 +32,9 @@ export function GoalManager(props: Props) {
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
   const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
   const [selectedEmoji, setSelectedEmoji] = useState<BaseEmoji | null>(null) // State for selected emoji
+  const [icon, setIcon] = useState<string | null>(null)
+  
+
 
   useEffect(() => {
     setName(props.goal.name)
@@ -40,6 +45,17 @@ export function GoalManager(props: Props) {
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  useEffect(() => {
+    setIcon(props.goal.icon)
+  }, [props.goal.id, props.goal.icon])
+
+
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
 
   const hasIcon = () => selectedEmoji != null
 
@@ -134,6 +150,10 @@ export function GoalManager(props: Props) {
         </Value>
       </Group>
 
+      <GoalIconContainer shouldShow={hasIcon()}>
+      <GoalIcon icon={goal.icon} onClick={addIconOnClick} />
+    </GoalIconContainer>
+
       <EmojiPickerContainer
         isOpen={emojiPickerIsOpen}
         hasIcon={hasIcon()}
@@ -146,6 +166,13 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
+
+type GoalIconContainerProps = { shouldShow: boolean }
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
+
 
 const GoalManagerContainer = styled.div`
   display: flex;
