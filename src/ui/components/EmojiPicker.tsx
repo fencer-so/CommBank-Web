@@ -3,9 +3,11 @@ import 'emoji-mart/css/emoji-mart.css'
 import { useAppSelector } from '../../store/hooks'
 import { selectMode } from '../../store/themeSlice'
 
-type Props = { onClick: (emoji: BaseEmoji, event: React.MouseEvent) => void }
+type Props = {
+  onClick: (emoji: BaseEmoji, event: React.MouseEvent) => void
+}
 
-export default function EmojiPicker(props: Props) {
+const EmojiPicker: React.FC<Props> = ({ onClick }) => {
   const theme = useAppSelector(selectMode)
 
   return (
@@ -13,8 +15,10 @@ export default function EmojiPicker(props: Props) {
       theme={theme}
       showPreview={false}
       showSkinTones={false}
-      onClick={props.onClick}
+      onClick={onClick}
       color="primary"
     />
   )
 }
+
+export default EmojiPicker
