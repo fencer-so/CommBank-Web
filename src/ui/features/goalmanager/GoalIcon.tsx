@@ -10,10 +10,10 @@ export default function GoalIcon(props: Props) {
     <TransparentButton onClick={props.onClick}>
       <Icon>{props.icon}</Icon>
     </TransparentButton>
-  )
+  );
 }
 
 const Icon = styled.h1`
-  font-size: 6rem;
-  cursor: pointer;
+font-size: 5.5rem;
+cursor: pointer;
 `
