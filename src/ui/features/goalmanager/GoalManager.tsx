@@ -98,7 +98,8 @@ export function GoalManager(props: Props) {
     }
 
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(props.goal.id, updatedGoal)
+    console.log(updateGoalApi(props.goal.id, updatedGoal))
+    
   }
   const hasIcon = () => icon != null
 
