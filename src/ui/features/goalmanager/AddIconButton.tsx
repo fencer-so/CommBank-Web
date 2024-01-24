@@ -20,11 +20,11 @@ export default function AddIconButton(props: Props) {
   )
 }
 
-const Container = styled.div`
+export const Container = styled.div`
   flex-direction: row;
   align-items: flex-end;
 `
-const Text = styled.span`
+export const Text = styled.span`
   margin-left: 0.6rem;
   font-size: 1.5rem;
   color: rgba(174, 174, 174, 1);
