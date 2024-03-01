@@ -27,6 +27,8 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+  //Update the goal model
+  icon: string | null
 }
 
 export interface Tag {
