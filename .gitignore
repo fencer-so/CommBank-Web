@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.vs/VSWorkspaceState.json
+.vs/CommBank-Web/v17/.wsuo
+.vs/CommBank-Web/v17/DocumentLayout.json

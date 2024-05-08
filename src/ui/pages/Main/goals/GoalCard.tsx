@@ -8,13 +8,16 @@ import {
   setType as setTypeRedux
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
-
+const Icon = styled.h1`
+  font-size: 5.5rem;
+`
 type Props = { id: string }
 
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
 
   const goal = useAppSelector(selectGoalsMap)[props.id]
+  console.log(goal)
 
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -29,6 +32,7 @@ export default function GoalCard(props: Props) {
     <Container key={goal.id} onClick={onClick}>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+      <Icon>{goal.icon}</Icon>
     </Container>
   )
 }
