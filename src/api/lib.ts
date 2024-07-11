@@ -2,7 +2,8 @@ import axios from 'axios'
 import { user } from '../data/user'
 import { Goal, Transaction, User } from './types'
 
-export const API_ROOT = 'https://fencer-commbank.azurewebsites.net'
+// Update the API_ROOT to point to the local API URL
+export const API_ROOT = 'http://localhost:5203'
 
 export async function getUser(): Promise<User | null> {
   try {
@@ -46,6 +47,16 @@ export async function createGoal(): Promise<Goal | null> {
 export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
   try {
     await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
+    return true
+  } catch (error: any) {
+    return false
+  }
+}
+
+// Add PUT request to update Goal icon
+export async function updateGoalIcon(goalId: string, icon: string): Promise<boolean> {
+  try {
+    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, { icon })
     return true
   } catch (error: any) {
     return false
