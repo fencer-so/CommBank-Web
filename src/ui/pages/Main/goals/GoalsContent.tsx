@@ -2,12 +2,14 @@ import React from 'react'
 import styled from 'styled-components'
 import { media } from '../../../utils/media'
 import GoalCard from './GoalCard'
-
+import { useEffect } from 'react'
 type Props = { ids: string[] | null }
 
 export default function GoalsContent(props: Props) {
-  if (!props.ids) return null
-
+  useEffect(() => {
+    console.log('goal', props)
+  })
+  if (!props.ids) {return null}
   return (
     <Container>
       {props.ids.map((id) => (

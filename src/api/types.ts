@@ -21,6 +21,7 @@ export interface Goal {
   id: string
   name: string
   targetAmount: number
+  icon: string
   balance: number
   targetDate: Date
   created: Date

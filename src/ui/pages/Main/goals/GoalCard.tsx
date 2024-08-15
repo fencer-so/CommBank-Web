@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { selectGoalsMap } from '../../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
@@ -10,23 +10,22 @@ import {
 import { Card } from '../../../components/Card'
 
 type Props = { id: string }
-
+const Icon = styled.h1`font-size:50px;`
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
 
   const goal = useAppSelector(selectGoalsMap)[props.id]
-
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
     dispatch(setContentRedux(goal))
     dispatch(setTypeRedux('Goal'))
     dispatch(setIsOpenRedux(true))
   }
-
   const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      <Icon>{goal.icon}</Icon>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
