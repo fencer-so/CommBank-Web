@@ -18,3 +18,19 @@ export default function EmojiPicker(props: Props) {
     />
   )
 }
+
+/*const EmojiPickerWrapper: React.FC<Props> = ({ onClick }) => {
+  const theme = useAppSelector(selectMode);
+
+  return (
+    <Picker
+      theme={theme}
+      showPreview={false}
+      showSkinTones={false}
+      onClick={onClick}
+      color="primary"
+    />
+  );
+};
+
+export default EmojiPickerWrapper;*/
