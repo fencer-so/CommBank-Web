@@ -1,3 +1,4 @@
+//Support for various necessary interfaces
 export interface Account {
   id: string
   number: number
@@ -18,6 +19,7 @@ export interface Application {
 }
 
 export interface Goal {
+  icon: string | null
   id: string
   name: string
   targetAmount: number
