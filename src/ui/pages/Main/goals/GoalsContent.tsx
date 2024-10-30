@@ -17,6 +17,7 @@ export default function GoalsContent(props: Props) {
   )
 }
 
+
 const Container = styled.div`
   display: flex;
   flex-direction: row;
