@@ -14,7 +14,7 @@ export default function AddIconButton(props: Props) {
     <Container>
       <TransparentButton onClick={props.onClick}>
         <FontAwesomeIcon icon={faSmile} size="2x" />
-        <Text>Add icon</Text>
+        <AddIconButtonText>Add icon</AddIconButtonText>
       </TransparentButton>
     </Container>
   )
@@ -24,7 +24,7 @@ const Container = styled.div`
   flex-direction: row;
   align-items: flex-end;
 `
-const Text = styled.span`
+const AddIconButtonText = styled.span`
   margin-left: 0.6rem;
   font-size: 1.5rem;
   color: rgba(174, 174, 174, 1);
