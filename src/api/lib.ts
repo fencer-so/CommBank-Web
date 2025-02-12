@@ -45,9 +45,15 @@ export async function createGoal(): Promise<Goal | null> {
 
 export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
   try {
-    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
+    const payload = {
+      ...updatedGoal,
+      icon: updatedGoal.icon ?? null,
+    }
+
+    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, payload)
     return true
   } catch (error: any) {
+    console.error('Error updating goal:', error.response?.data || error.message)
     return false
   }
 }
