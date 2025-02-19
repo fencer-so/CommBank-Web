@@ -23,6 +23,7 @@ export interface Goal {
   targetAmount: number
   balance: number
   targetDate: Date
+  icon:string|null
   created: Date
   accountId: string
   transactionIds: string[]
