@@ -4,6 +4,7 @@ import React from 'react'
 import styled from 'styled-components'
 import CommBank from '../../../assets/images/commbank.svg'
 import { media } from '../../utils/media'
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export default function Navbar() {
   return (
@@ -14,19 +15,19 @@ export default function Navbar() {
         </LogoWrapper>
 
         <DrawerItem isSelected={true}>
-          <FontAwesomeIcon icon={faRocket} size="2x" />
+          <FontAwesomeIcon icon={faRocket as IconProp} size="2x" />
           <span>Dashboard</span>
         </DrawerItem>
 
         <DrawerItem isSelected={false}>
-          <FontAwesomeIcon icon={faChartLine} size="2x" />
+          <FontAwesomeIcon icon={faChartLine as IconProp} size="2x" />
           <span>Goals</span>
         </DrawerItem>
       </Section>
 
       <Section>
         <DrawerItem isSelected={false}>
-          <FontAwesomeIcon icon={faGear} size="2x" />
+          <FontAwesomeIcon icon={faGear as IconProp} size="2x" />
           <span>Settings</span>
         </DrawerItem>
       </Section>

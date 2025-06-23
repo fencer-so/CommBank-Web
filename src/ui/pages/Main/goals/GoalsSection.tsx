@@ -13,6 +13,7 @@ import {
 import { SectionHeading } from '../../../components/SectionHeading'
 import { media } from '../../../utils/media'
 import GoalsContent from './GoalsContent'
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export default function GoalsSection() {
   const dispatch = useAppDispatch()
@@ -42,7 +43,7 @@ export default function GoalsSection() {
       <TopGroup>
         <SectionHeading>Goals</SectionHeading>
         <Icon onClick={onClick}>
-          <FontAwesomeIcon icon={faPlusCircle} size="2x" className="alert" />
+          <FontAwesomeIcon icon={faPlusCircle as IconProp} size="2x" className="alert" />
         </Icon>
       </TopGroup>
 

@@ -7,6 +7,7 @@ import {
   setDarkMode as setDarkModeRedux,
   setLightMode as setLightModeRedux,
 } from '../../../store/themeSlice'
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export default function ThemeSwitcher() {
   const mode = useAppSelector(selectMode)
@@ -19,7 +20,7 @@ export default function ThemeSwitcher() {
 
   return (
     <div onClick={onClick}>
-      <FontAwesomeIcon icon={mode === 'light' ? faMoon : faSun} size="2x" />
+      <FontAwesomeIcon icon={(mode === 'light' ? faMoon : faSun) as IconProp} size="2x" />
     </div>
   )
 }

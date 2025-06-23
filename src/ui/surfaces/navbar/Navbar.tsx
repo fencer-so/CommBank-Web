@@ -7,6 +7,7 @@ import { useAppSelector } from '../../../store/hooks'
 import { selectUser } from '../../../store/userSlice'
 import ThemeSwitcher from '../../features/themeswitcher/ThemeSwitcher'
 import { media } from '../../utils/media'
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export default function Navbar() {
   const user = useAppSelector(selectUser)
@@ -19,11 +20,11 @@ export default function Navbar() {
         </NavbarAction>
 
         <NavbarAction>
-          <FontAwesomeIcon icon={faEnvelope} size="2x" />
+          <FontAwesomeIcon icon={faEnvelope as IconProp} size="2x" />
         </NavbarAction>
 
         <NavbarAction>
-          <FontAwesomeIcon icon={faBell} size="2x" />
+          <FontAwesomeIcon icon={faBell as IconProp} size="2x" />
         </NavbarAction>
 
         <UserGroup>

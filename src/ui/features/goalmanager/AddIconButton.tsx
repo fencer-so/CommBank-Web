@@ -4,6 +4,7 @@ import 'date-fns'
 import React from 'react'
 import styled from 'styled-components'
 import { TransparentButton } from '../../components/TransparentButton'
+import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 type Props = { hasIcon: boolean; onClick: (event: React.MouseEvent) => void }
 
@@ -13,7 +14,7 @@ export default function AddIconButton(props: Props) {
   return (
     <Container>
       <TransparentButton onClick={props.onClick}>
-        <FontAwesomeIcon icon={faSmile} size="2x" />
+        <FontAwesomeIcon icon={faSmile as IconProp} size="2x" />
         <Text>Add icon</Text>
       </TransparentButton>
     </Container>
