@@ -8,3 +8,4 @@ export const TransparentButton = styled.button`
   margin: 0;
   cursor: pointer;
 `
+export default TransparentButton

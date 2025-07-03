@@ -51,6 +51,15 @@ export interface User {
   applicationIds: string[]
 }
 
+export interface Goal {
+  id: string;
+  name: string;
+  targetAmount: number;
+  targetDate: Date;
+  balance: number;
+  icon: string | null;
+}
+
 export enum AccountType {
   GoalSaver,
   NetBankSaver,
