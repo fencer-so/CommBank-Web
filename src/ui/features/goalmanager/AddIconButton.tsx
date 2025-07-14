@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import { TransparentButton } from '../../components/TransparentButton'
 
 type Props = { hasIcon: boolean; onClick: (event: React.MouseEvent) => void }
-
 export default function AddIconButton(props: Props) {
   if (props.hasIcon) return null
 
