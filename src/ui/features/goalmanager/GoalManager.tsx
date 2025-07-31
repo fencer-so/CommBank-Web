@@ -41,8 +41,8 @@ export function GoalManager(props: Props) {
     event.stopPropagation();
     setEmojiPickerIsOpen(!emojiPickerIsOpen);
   }
-  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
-    event.stopPropagation();
+const pickEmojiOnClick = async (emoji: BaseEmoji, event: React.MouseEvent) => {
+  event.stopPropagation();
 
     setIcon(emoji.native);
     setEmojiPickerIsOpen(false);
@@ -56,7 +56,16 @@ export function GoalManager(props: Props) {
     };
 
     dispatch(updateGoalRedux(updatedGoal));
+  
+    const ok = await updateGoalApi(props.goal.id, updatedGoal);
+    if (!ok) {
+      console.error('Failed to update goal with new icon');
+      dispatch(updateGoalRedux(props.goal)); // revert to original goal if update fails
+      setIcon(props.goal.icon ?? null); // reset icon to original
+      setEmojiPickerIsOpen(false); // close emoji picker
+    }
   }
+
   useEffect(() => {
     setIcon(props.goal.icon)
   }, [props.goal.id, props.goal.icon])
