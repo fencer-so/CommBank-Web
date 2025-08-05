@@ -11,6 +11,8 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { BaseEmoji } from 'emoji-mart'
+import EmojiPicker from './EmojiPicker'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,16 +23,20 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
@@ -75,9 +81,47 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const hasIcon = () => icon != null
+
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    event.stopPropagation()
+
+    setIcon(emoji.native)
+    setEmojiPickerIsOpen(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+
+    // TODO(TASK-3) Update database
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+
   return (
-    <GoalManagerContainer>
+    <GoalManagerContainer onClick={() => setEmojiPickerIsOpen(false)}>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+
+      <Group>
+        <Field name="Icon" icon={faDollarSign} />
+        <Value>
+          <IconContainer onClick={(e) => {
+            e.stopPropagation()
+            setEmojiPickerIsOpen(!emojiPickerIsOpen)
+          }}>
+            {icon ? (
+              <EmojiDisplay>{icon}</EmojiDisplay>
+            ) : (
+              <AddIconButton>+ Add Icon</AddIconButton>
+            )}
+          </IconContainer>
+        </Value>
+      </Group>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -106,13 +150,19 @@ export function GoalManager(props: Props) {
           <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
         </Value>
       </Group>
+
+      <EmojiPickerContainer
+        isOpen={emojiPickerIsOpen}
+        hasIcon={hasIcon()}
+        onClick={(event: React.MouseEvent) => event.stopPropagation()}
+      >
+        <EmojiPicker onClick={pickEmojiOnClick} />
+      </EmojiPickerContainer>
     </GoalManagerContainer>
   )
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
 const Field = (props: FieldProps) => (
@@ -181,4 +231,34 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
+  left: 0;
+`
+
+const IconContainer = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(174, 174, 174, 0.1);
+  }
+`
+
+const EmojiDisplay = styled.span`
+  font-size: 2rem;
+`
+
+const AddIconButton = styled.span`
+  font-size: 1.2rem;
+  color: rgba(174, 174, 174, 1);
+  font-weight: normal;
 `
