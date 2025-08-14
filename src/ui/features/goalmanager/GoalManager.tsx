@@ -16,6 +16,7 @@ import { BaseEmoji } from 'emoji-mart'
 import EmojiPicker from '../../components/EmojiPicker'
 import GoalIcon from './GoalIcon'
 
+
 type Props = { goal: Goal }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean };
 
@@ -49,12 +50,19 @@ export function GoalManager(props: Props) {
     event.stopPropagation();
     setIcon(emoji.native);
     setIsEmojiPickerOpen(false);
+    
     const updatedGoal: Goal = {
       ...props.goal,
       icon: emoji.native,
     }
-    dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(props.goal.id, updatedGoal)
+    
+  updateGoalApi(props.goal.id, updatedGoal).then((ok) => {
+    if (!ok) {
+      console.error('Failed to update goal with new icon');
+    }
+  });
+  dispatch(updateGoalRedux(updatedGoal))
+
   }
 
   useEffect(() => {
@@ -108,7 +116,7 @@ export function GoalManager(props: Props) {
       dispatch(updateGoalRedux(updatedGoal))
       updateGoalApi(props.goal.id, updatedGoal)
     }
-  }
+  };
 
   return (
     <GoalManagerContainer>
