@@ -1,3 +1,5 @@
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons"
+
 export interface Account {
   id: string
   number: number
@@ -19,6 +21,7 @@ export interface Application {
 
 export interface Goal {
   id: string
+  icon: string | null
   name: string
   targetAmount: number
   balance: number
