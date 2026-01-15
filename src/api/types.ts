@@ -2,7 +2,8 @@ export interface Account {
   id: string
   number: number
   name: string
-  balance: number
+  balance: number 
+  icon?: string;
   accountType: AccountType
   applicationId: string
   transactionIds: string[]
@@ -10,7 +11,7 @@ export interface Account {
 
 export interface Application {
   id: string
-  created: Date
+  created: Date 
   modified: Date
   accountType: AccountType
   applicationStatus: ApplicationStatus
@@ -23,6 +24,7 @@ export interface Goal {
   targetAmount: number
   balance: number
   targetDate: Date
+  icon?: string 
   created: Date
   accountId: string
   transactionIds: string[]
