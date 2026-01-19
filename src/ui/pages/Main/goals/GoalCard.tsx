@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import {
   setContent as setContentRedux,
   setIsOpen as setIsOpenRedux,
-  setType as setTypeRedux
+  setType as setTypeRedux,
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
 
@@ -27,11 +27,17 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {goal.icon && <Icon>{goal.icon}</Icon>}
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
   )
 }
+
+const Icon = styled.span`
+  font-size: 2rem;
+  margin-right: 0.5rem;
+`
 
 const Container = styled(Card)`
   display: flex;
