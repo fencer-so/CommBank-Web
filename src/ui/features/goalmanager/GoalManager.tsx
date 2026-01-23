@@ -18,6 +18,9 @@ export function GoalManager(props: Props) {
 
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
+  const [icon, setIcon] = useState<string | null>(null)
+
+
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
@@ -34,8 +37,29 @@ export function GoalManager(props: Props) {
   ])
 
   useEffect(() => {
+  setIcon(props.goal.icon ?? null)
+}, [props.goal.icon])
+
+
+  useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  const updateIcon = (nextIcon: string) => {
+  setIcon(nextIcon)
+
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: nextIcon,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+  }
+
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+}
+
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -77,6 +101,8 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      {icon && <Icon>{icon}</Icon>}
+
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -181,4 +207,8 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+const Icon = styled.h1`
+  font-size: 4rem;
+  margin-bottom: 1rem;
 `
