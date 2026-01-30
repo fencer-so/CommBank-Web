@@ -110,6 +110,7 @@ export function GoalManager(props: Props) {
   )
 }
 
+
 type FieldProps = { name: string; icon: IconDefinition }
 type AddIconButtonContainerProps = { shouldShow: boolean }
 type GoalIconContainerProps = { shouldShow: boolean }
