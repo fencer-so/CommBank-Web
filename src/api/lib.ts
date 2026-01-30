@@ -50,4 +50,5 @@ export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boo
   } catch (error: any) {
     return false
   }
+  
 }

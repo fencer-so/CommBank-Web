@@ -16,6 +16,7 @@ import { TransparentButton } from '../../components/TransparentButton'
 import GoalIcon from './GoalIcon'
 import { Theme } from '../../components/Theme'
 
+
 type Props = { goal: Goal }
 
 // Styled Components
