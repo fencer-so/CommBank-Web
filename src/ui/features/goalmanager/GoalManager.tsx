@@ -32,6 +32,8 @@ export function GoalManager(props: Props) {
 
   const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
+  const hasIcon = () => icon != null
+
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
@@ -114,6 +116,7 @@ export function GoalManager(props: Props) {
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
+
         <Value>
           <DatePicker value={targetDate} onChange={pickDateOnChange} />
         </Value>
@@ -121,25 +124,38 @@ export function GoalManager(props: Props) {
 
       <Group>
         <Field name="Target Amount" icon={faDollarSign} />
+
         <Value>
           <StringInput value={targetAmount ?? ''} onChange={updateTargetAmountOnChange} />
         </Value>
       </Group>
-      <GoalIconDisplay
-        onClick={(event) => {
-          event.stopPropagation()
-          setEmojiPickerIsOpen(true)
-        }}
+      <Group>
+        <Field name="Icon" icon={faDollarSign} />
+
+        <Value>
+          <StringValue
+            onClick={(event) => {
+              event.stopPropagation()
+              setEmojiPickerIsOpen(true)
+            }}
+            style={{ cursor: 'pointer' }}
+          >
+            {icon ?? 'Click to add icon'}
+          </StringValue>
+        </Value>
+      </Group>
+
+      <EmojiPickerContainer
+        isOpen={emojiPickerIsOpen}
+        hasIcon={hasIcon()}
+        onClick={(event) => event.stopPropagation()}
       >
-        {icon ?? '➕'}
-      </GoalIconDisplay>
-      {/* Emoji Picker */}
-      <EmojiPickerContainer isOpen={emojiPickerIsOpen} hasIcon={icon != null}>
         <EmojiPicker onClick={pickEmojiOnClick} />
       </EmojiPickerContainer>
 
       <Group>
         <Field name="Balance" icon={faDollarSign} />
+
         <Value>
           <StringValue>{props.goal.balance}</StringValue>
         </Value>
@@ -147,6 +163,7 @@ export function GoalManager(props: Props) {
 
       <Group>
         <Field name="Date Created" icon={faCalendarAlt} />
+
         <Value>
           <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
         </Value>
@@ -155,12 +172,20 @@ export function GoalManager(props: Props) {
   )
 }
 
-type FieldProps = { name: string; icon: IconDefinition }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+type FieldProps = {
+  name: string
+  icon: IconDefinition
+}
+
+type EmojiPickerContainerProps = {
+  isOpen: boolean
+  hasIcon: boolean
+}
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
     <FontAwesomeIcon icon={props.icon} size="2x" />
+
     <FieldName>{props.name}</FieldName>
   </FieldContainer>
 )
@@ -208,20 +233,5 @@ const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
   display: ${(props) => (props.isOpen ? 'flex' : 'none')};
   position: absolute;
   top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
-  z-index: 10;
-`
-
-const EmojiIcon = styled.span`
-  font-size: 3rem;
-`
-
-const EmojiPlaceholder = styled.span`
-  font-size: 3rem;
-  color: gray;
-`
-const GoalIconDisplay = styled.div`
-  font-size: 4rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
+  left: 0;
 `
