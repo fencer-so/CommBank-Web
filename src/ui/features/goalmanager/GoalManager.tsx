@@ -16,8 +16,7 @@ import EmojiPicker from '../../components/EmojiPicker'
 import { Theme } from '../../components/Theme'
 
 import { BaseEmoji } from 'emoji-mart/dist-es/utils/emoji-index/nimble-emoji-index'
-import { FALSE } from 'sass'
-import Icon from '@material-ui/core/Icon/Icon'
+
 type Props = { goal: Goal }
 
 export function GoalManager(props: Props) {
