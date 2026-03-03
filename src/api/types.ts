@@ -26,7 +26,8 @@ export interface Goal {
   created: Date
   accountId: string
   transactionIds: string[]
-  tagIds: string[]
+  tagIds: string[],
+  icon?: string
 }
 
 export interface Tag {
@@ -41,7 +42,7 @@ export interface Transaction {
   dateTime: Date
   goalId?: string
   description: string
-  tagIds: string[]
+  tagIds: string[]  
 }
 
 export interface User {
