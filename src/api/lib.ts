@@ -51,3 +51,16 @@ export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boo
     return false
   }
 }
+export async function updateGoalIcon(id: string, icon: string) {
+  const response = await fetch(`/api/goals/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      icon: icon
+    })
+  });
+
+  return response.json();
+}
