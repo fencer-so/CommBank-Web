@@ -43,4 +43,11 @@ const TopGroup = styled.div`
 const Img = styled.img`
   width: 350px;
   height: 209px;
+  max-width: 100%;
+  object-fit: contain;
+
+  ${media('<tablet')} {
+    width: 100%;
+    height: auto;
+  }
 `

@@ -12,9 +12,9 @@
     "@reduxjs/toolkit": "^1.5.1",
     "@types/emoji-mart": "^3.0.5",
     "@types/node": "^17.0.41",
-    "@types/react": "^16.9.0",
+    "@types/react": "^17.0.0",
     "@types/react-redux": "^7.1.7",
-    "axios": "^0.27.2",
+    "axios": "^1.13.6",
     "css-in-js-media": "^2.0.1",
     "date-fns": "^2.28.0",
     "emoji-mart": "^3.0.1",
@@ -30,10 +30,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "npx react-scripts start",
+    "build": "npx react-scripts build",
+    "test": "npx react-scripts test",
+    "eject": "npx react-scripts eject",
     "format": "prettier --config .prettierrc 'src/**/*.ts*' --write"
   },
   "eslintConfig": {
@@ -56,7 +56,7 @@
   },
   "devDependencies": {
     "@types/emoji-mart": "^3.0.9",
-    "@types/react-dom": "^18.0.5",
+    "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.25"
   }
 }

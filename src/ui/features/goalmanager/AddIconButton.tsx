@@ -21,11 +21,14 @@ export default function AddIconButton(props: Props) {
 }
 
 const Container = styled.div`
+  display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
 `
 const Text = styled.span`
   margin-left: 0.6rem;
   font-size: 1.5rem;
   color: rgba(174, 174, 174, 1);
+  text-decoration: underline;
+  cursor: pointer;
 `

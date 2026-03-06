@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { selectGoalsMap } from '../../../../store/goalsSlice'
+import { media } from '../../../utils/media'
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import {
   setContent as setContentRedux,
@@ -27,30 +28,44 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {goal.icon != null && <Icon>{goal.icon}</Icon>}
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
   )
 }
 
+const Icon = styled.h1`
+  font-size: 5.5rem;
+  ${media('<tablet')} {
+    font-size: 3.5rem;
+  }
+`
+
 const Container = styled(Card)`
   display: flex;
   flex-direction: column;
   min-height: 140px;
   min-width: 140px;
-  width: 33%;
+  flex: 0 0 auto;
+  width: 180px;
   cursor: pointer;
-  margin-left: 2rem;
-  margin-right: 2rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   border-radius: 2rem;
-
   align-items: center;
 `
 const TargetAmount = styled.h2`
   font-size: 2rem;
+  ${media('<tablet')} {
+    font-size: 1.5rem;
+  }
 `
 
 const TargetDate = styled.h4`
   color: rgba(174, 174, 174, 1);
   font-size: 1rem;
+  ${media('<tablet')} {
+    font-size: 0.85rem;
+  }
 `

@@ -20,15 +20,15 @@ export default function GoalsContent(props: Props) {
 const Container = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: nowrap;
   justify-content: flex-start;
   width: 400px;
-  padding: 4rem;
+  padding: 2rem 4rem;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 
   ${media('<tablet')} {
     width: 100%;
-
-    padding-left: 0;
-    padding-right: 0;
+    padding: 1rem 2rem;
   }
 `
