@@ -22,6 +22,7 @@ export async function getTransactions(): Promise<Transaction[] | null> {
   }
 }
 
+
 export async function getGoals(): Promise<Goal[] | null> {
   try {
     const response = await axios.get(`${API_ROOT}/api/Goal/User/${user.id}`)
