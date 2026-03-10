@@ -47,9 +47,18 @@ const Container = styled.div`
   justify-content: flex-end;
   position: sticky;
   top: 0;
-  padding: 1.5rem 1.5rem;
+  padding: 1.5rem;
   width: 100%;
+  min-width: 0;
   height: 8rem;
+  flex-shrink: 0;
+  background-color: ${({ theme }) => theme.background};
+  z-index: 1;
+
+  ${media('<tablet')} {
+    padding: 0.75rem 1rem;
+    height: 5rem;
+  }
 `
 
 const NavbarActions = styled.div`
