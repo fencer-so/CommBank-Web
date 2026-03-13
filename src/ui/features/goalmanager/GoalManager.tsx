@@ -21,11 +21,13 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
@@ -42,6 +44,7 @@ export function GoalManager(props: Props) {
     setName(nextName)
     const updatedGoal: Goal = {
       ...props.goal,
+      icon: icon ?? props.goal.icon,
       name: nextName,
     }
     dispatch(updateGoalRedux(updatedGoal))
