@@ -2,6 +2,9 @@ import { faSmile } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import 'date-fns'
 import React from 'react'
+import { Picker } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
+
 import styled from 'styled-components'
 import { TransparentButton } from '../../components/TransparentButton'
 
