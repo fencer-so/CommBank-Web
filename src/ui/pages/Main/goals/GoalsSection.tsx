@@ -76,4 +76,5 @@ const TopGroup = styled.div`
 
 const Icon = styled.a`
   margin-left: 1rem;
+  cursor: pointer;
 `
