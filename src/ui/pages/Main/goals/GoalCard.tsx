@@ -8,6 +8,7 @@ import {
   setType as setTypeRedux
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
+import { Icon } from '@material-ui/core'
 
 type Props = { id: string }
 
@@ -29,6 +30,7 @@ export default function GoalCard(props: Props) {
     <Container key={goal.id} onClick={onClick}>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+      <Icon style={{paddingTop:"1rem", transform: "scale(3.5)", marginTop: "1rem",width:"fit-content",height:"fit-content" }}>{goal.icon}</Icon>
     </Container>
   )
 }
@@ -36,6 +38,9 @@ export default function GoalCard(props: Props) {
 const Container = styled(Card)`
   display: flex;
   flex-direction: column;
+  align-items: center; 
+  justify-content: flex-start;   
+  padding-top:1rem;
   min-height: 140px;
   min-width: 140px;
   width: 33%;
@@ -43,7 +48,6 @@ const Container = styled(Card)`
   margin-left: 2rem;
   margin-right: 2rem;
   border-radius: 2rem;
-
   align-items: center;
 `
 const TargetAmount = styled.h2`
