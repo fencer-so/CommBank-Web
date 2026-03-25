@@ -11,10 +11,15 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { BaseEmoji } from 'emoji-mart'
+import EmojiPicker from '../../components/EmojiPicker'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
+  const [isPickerOpen, setIsPickerOpen] = useState(false)
 
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
@@ -75,8 +80,38 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const handleEmojiClick = (emoji: BaseEmoji) => {
+    const nextIcon = emoji.native
+    const updatedGoal: Goal = {
+      ...goal,
+      icon: nextIcon,
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(goal.id, updatedGoal)
+    setIsPickerOpen(false)
+  }
+
+  const togglePicker = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setIsPickerOpen(!isPickerOpen)
+  }
+
   return (
     <GoalManagerContainer>
+      <div style={{ position: 'relative', marginBottom: '1rem' }}>
+        {goal.icon ? (
+          <GoalIcon icon={goal.icon} onClick={togglePicker} />
+        ) : (
+          <AddIconButton hasIcon={false} onClick={togglePicker} />
+        )}
+
+        {isPickerOpen && (
+          <div style={{ position: 'absolute', zIndex: 10 }}>
+            <EmojiPicker onClick={handleEmojiClick} />
+          </div>
+        )}
+      </div>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
