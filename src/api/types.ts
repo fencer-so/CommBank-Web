@@ -27,6 +27,7 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+  icon?: string // Added optional icon field
 }
 
 export interface Tag {

@@ -1,8 +1,10 @@
-import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+import { faCalendarAlt, faSmile } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
+import { Picker } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { updateGoal as updateGoalApi } from '../../../api/lib'
@@ -21,21 +23,41 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | undefined>(undefined)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon
   ])
 
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  const handleIconSelect = (emoji: any) => {
+    const nextIcon = emoji.native
+    setIcon(nextIcon)
+    setShowEmojiPicker(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: nextIcon
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -77,7 +99,18 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
-      <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      <Row>
+        <EmojiTrigger onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+          {icon ? <SelectedEmoji>{icon}</SelectedEmoji> : <FontAwesomeIcon icon={faSmile} size="3x" />}
+        </EmojiTrigger>
+        <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      </Row>
+
+      {showEmojiPicker && (
+        <PickerWrapper>
+          <Picker onSelect={handleIconSelect} theme="dark" />
+        </PickerWrapper>
+      )}
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -110,12 +143,7 @@ export function GoalManager(props: Props) {
   )
 }
 
-type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
-
-const Field = (props: FieldProps) => (
+const Field = (props: { name: string; icon: IconDefinition }) => (
   <FieldContainer>
     <FontAwesomeIcon icon={props.icon} size="2x" />
     <FieldName>{props.name}</FieldName>
@@ -130,6 +158,33 @@ const GoalManagerContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
+`
+
+const Row = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2rem;
+`
+
+const EmojiTrigger = styled.div`
+  cursor: pointer;
+  color: rgba(174, 174, 174, 1);
+  transition: transform 0.2s;
+  &:hover {
+    transform: scale(1.1);
+  }
+`
+
+const SelectedEmoji = styled.span`
+  font-size: 4rem;
+`
+
+const PickerWrapper = styled.div`
+  position: absolute;
+  top: 6rem;
+  left: 0;
+  z-index: 100;
 `
 
 const Group = styled.div`
@@ -160,7 +215,6 @@ const FieldContainer = styled.div`
   flex-direction: row;
   align-items: center;
   width: 20rem;
-
   svg {
     color: rgba(174, 174, 174, 1);
   }
@@ -178,7 +232,6 @@ const StringInput = styled.input`
   font-weight: bold;
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
-
 const Value = styled.div`
   margin-left: 2rem;
 `
