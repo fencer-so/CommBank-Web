@@ -80,15 +80,18 @@ export function GoalManager(props: Props) {
     }
   }
 
-  const handleEmojiClick = (emoji: BaseEmoji) => {
-    const nextIcon = emoji.native
+  const pickEmojiOnClick = () => (emoji: BaseEmoji, event: React.MouseEvent) => {
     const updatedGoal: Goal = {
-      ...goal,
-      icon: nextIcon,
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
     }
 
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(goal.id, updatedGoal)
+    updateGoalApi(props.goal.id, updatedGoal)
+
     setIsPickerOpen(false)
   }
 
@@ -108,7 +111,7 @@ export function GoalManager(props: Props) {
 
         {isPickerOpen && (
           <div style={{ position: 'absolute', zIndex: 10 }}>
-            <EmojiPicker onClick={handleEmojiClick} />
+            <EmojiPicker onClick={pickEmojiOnClick()} />
           </div>
         )}
       </div>
