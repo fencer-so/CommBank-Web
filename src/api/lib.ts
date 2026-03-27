@@ -43,11 +43,12 @@ export async function createGoal(): Promise<Goal | null> {
   }
 }
 
-export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
+// ✅ FIXED PUT REQUEST
+export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<Goal | null> {
   try {
-    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
-    return true
+    const response = await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
+    return response.data
   } catch (error: any) {
-    return false
+    return null
   }
 }
