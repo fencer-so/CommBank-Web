@@ -11,13 +11,16 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { Picker } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
 
 type Props = { goal: Goal }
-export function GoalManager(props: Props) {
+export function (props: Props) {
   const dispatch = useAppDispatch()
 
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
-
+  const [showPicker, setShowPicker] = React.useState(false)
+const [icon, setIcon] = React.useState(goal?.icon || "🎯")
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
@@ -26,6 +29,7 @@ export function GoalManager(props: Props) {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon || "🎯")
   }, [
     props.goal.id,
     props.goal.name,
@@ -76,8 +80,34 @@ export function GoalManager(props: Props) {
   }
 
   return (
-    <GoalManagerContainer>
+    <Container>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+
+      <Group>
+        <Field name="Icon" icon={faDollarSign} />
+        <Value>
+          <button onClick={() => setShowPicker(!showPicker)}>
+            {icon}
+          </button>
+          {showPicker && (
+            <Picker
+              onSelect={(emoji: any) => {
+                setIcon(emoji.native)
+                setShowPicker(false)
+                const updatedGoal: Goal = {
+                  ...props.goal,
+                  name: name ?? props.goal.name,
+                  targetDate: targetDate ?? props.goal.targetDate,
+                  targetAmount: targetAmount ?? props.goal.targetAmount,
+                  icon: emoji.native,
+                }
+                dispatch(updateGoalRedux(updatedGoal))
+                updateGoalApi(props.goal.id, updatedGoal)
+              }}
+            />
+          )}
+        </Value>
+      </Group>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -106,7 +136,7 @@ export function GoalManager(props: Props) {
           <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
         </Value>
       </Group>
-    </GoalManagerContainer>
+    </Container>
   )
 }
 
@@ -122,7 +152,7 @@ const Field = (props: FieldProps) => (
   </FieldContainer>
 )
 
-const GoalManagerContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

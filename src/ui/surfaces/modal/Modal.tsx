@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Goal } from '../../../api/types'
 import { useAppSelector } from '../../../store/hooks'
 import { selectContent, selectIsOpen, selectType } from '../../../store/modalSlice'
-import { GoalManager } from '../../features/goalmanager/GoalManager'
+import {  } from '../../features//'
 
 export default function Modal() {
   const isOpen = useAppSelector(selectIsOpen)
@@ -13,7 +13,7 @@ export default function Modal() {
   const renderSwitch = () => {
     switch (type) {
       case 'Goal':
-        return <GoalManager goal={content as Goal} />
+        return < goal={content as Goal} />
     }
   }
 

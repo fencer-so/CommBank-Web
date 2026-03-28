@@ -28,10 +28,20 @@ export const goalsSlice = createSlice({
     updateGoal: (state, action: PayloadAction<Goal>) => {
       state.map[action.payload.id] = action.payload
     },
+
+    setGoals: (state, action: PayloadAction<Goal[]>) => {
+      state.map = {}
+      state.list = []
+
+      action.payload.forEach((goal) => {
+        state.map[goal.id] = goal
+        state.list.push(goal.id)
+      })
+    },
   },
 })
 
-export const { createGoal, updateGoal } = goalsSlice.actions
+export const { createGoal, updateGoal, setGoals } = goalsSlice.actions
 
 export const selectGoalsMap = (state: RootState) => state.goals.map
 export const selectGoalsList = (state: RootState) => state.goals.list
