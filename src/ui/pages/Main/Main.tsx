@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import Drawer from '../../surfaces/drawer/Drawer'
 import Navbar from '../../surfaces/navbar/Navbar'
@@ -6,8 +6,22 @@ import { media } from '../../utils/media'
 import AccountsSection from './accounts/AccountsSection'
 import GoalsSection from './goals/GoalsSection'
 import TransactionsSection from './transactions/TransactionsSection'
+import { useAppDispatch } from "../../../store/hooks"
+import { setGoals } from "../../../store/goalsSlice"
 
 export default function Main() {
+  const dispatch = useAppDispatch()
+
+useEffect(() => {
+  fetch("http://localhost:3001/goals")
+    .then(res => res.json())
+    .then(data => {
+      console.log("API DATA:", data)   // 👈 ADD THIS
+      dispatch(setGoals(data))
+    })
+    .catch(err => console.error(err))
+}, [dispatch])
+
   return (
     <Container>
       <Drawer />

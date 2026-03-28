@@ -14,7 +14,12 @@ type Props = { id: string }
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
 
-  const goal = useAppSelector(selectGoalsMap)[props.id]
+  const goalsMap = useAppSelector(selectGoalsMap)
+  const goal = goalsMap?.[props.id]
+
+  if (!goal) {
+    return <div>Loading...</div>
+  }
 
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -26,9 +31,12 @@ export default function GoalCard(props: Props) {
   const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
 
   return (
-    <Container key={goal.id} onClick={onClick}>
-      <TargetAmount>${goal.targetAmount}</TargetAmount>
-      <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+    <Container onClick={onClick}>
+    <h3 style={{ fontSize: "20px" }}>
+  {goal.icon || "🎯"} {goal.name}
+   </h3>
+      <TargetAmount>${goal.targetAmount ?? 0}</TargetAmount>
+      <TargetDate>{goal.targetDate ? asLocaleDateString(goal.targetDate) : 'No date'}</TargetDate>
     </Container>
   )
 }
