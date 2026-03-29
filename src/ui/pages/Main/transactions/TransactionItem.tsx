@@ -17,17 +17,12 @@ export function TransactionItem(props: Props) {
     }
 
     async function fetchAll() {
-      const tags: Tag[] = []
-      for (const tagId of props.transaction.tagIds) {
-        const tag = await fetch(tagId)
-        tags.push(tag)
-      }
-
-      setTags(tags)
+      const fetchedTags = await Promise.all(props.transaction.tagIds.map(fetch))
+      setTags(fetchedTags)
     }
 
     fetchAll()
-  })
+  }, [props.transaction.id, props.transaction.tagIds])
 
   return (
     <Container>
@@ -40,11 +35,10 @@ export function TransactionItem(props: Props) {
           props.transaction.dateTime,
         ).toLocaleDateString()}`}</h6>
 
-        <h6 className="price">{`${
-          props.transaction.transactionType === 'Credit'
-            ? `$${props.transaction.amount}`
-            : `-$${props.transaction.amount}`
-        }`}</h6>
+        <h6 className="price">{`${props.transaction.transactionType === 'Credit'
+          ? `$${props.transaction.amount}`
+          : `-$${props.transaction.amount}`
+          }`}</h6>
       </Content>
       <Divider />
     </Container>

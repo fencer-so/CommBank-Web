@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { user } from '../data/user'
-import { Goal, Transaction, User } from './types'
+import { Account, Goal, Tag, Transaction, User } from './types'
 
 export const API_ROOT = 'https://fencer-commbank.azurewebsites.net'
 
@@ -51,3 +51,42 @@ export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boo
     return false
   }
 }
+
+export async function updateTransaction(transactionId: string, updatedTransaction: Transaction): Promise<boolean> {
+  try {
+    await axios.put(`${API_ROOT}/api/Transaction/${transactionId}`, updatedTransaction)
+    return true
+  } catch (error: any) {
+    return false
+  }
+}
+
+export async function updateUser(userId: string, updatedUser: User): Promise<boolean> {
+  try {
+    await axios.put(`${API_ROOT}/api/User/${userId}`, updatedUser)
+    return true
+  } catch (error: any) {
+    return false
+  }
+}
+
+export async function updateTag(tagId: string, updatedTag: Tag): Promise<boolean> {
+  try {
+    await axios.put(`${API_ROOT}/api/Tag/${tagId}`, updatedTag)
+    return true
+  } catch (error: any) {
+    return false
+  }
+}
+
+export async function updateAccount(accountId: string, updatedAccount: Account): Promise<boolean> {
+  try {
+    await axios.put(`${API_ROOT}/api/Account/${accountId}`, updatedAccount)
+    return true
+  } catch (error: any) {
+    return false
+  }
+}
+
+
+
