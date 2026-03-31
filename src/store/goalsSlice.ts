@@ -1,39 +1,58 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Goal } from '../api/types'
 import { RootState } from './store'
 
-export interface GoalsState {
-  map: IdToGoal
-  list: string[]
+// Define Goal type directly here
+export interface Goal {
+  id: string
+  name: string
+  targetDate: Date
+  targetAmount: number
+  balance: number
+  created: Date
+  accountId: string
+  transactionIds: string[]
+  tagIds: string[]
+  icon?: string
 }
 
-export interface IdToGoal {
-  [id: string]: Goal
+interface GoalsState {
+  goalsMap: Record<string, Goal>
 }
 
 const initialState: GoalsState = {
-  map: {},
-  list: [],
+  goalsMap: {},
 }
 
-export const goalsSlice = createSlice({
-  name: 'goal',
+const goalsSlice = createSlice({
+  name: 'goals',
   initialState,
   reducers: {
-    createGoal: (state, action: PayloadAction<Goal>) => {
-      state.map[action.payload.id] = action.payload
-      state.list.push(action.payload.id)
+    setGoals(state, action: PayloadAction<Goal[]>) {
+      state.goalsMap = action.payload.reduce((map, goal) => {
+        map[goal.id] = goal
+        return map
+      }, {} as Record<string, Goal>)
     },
-
-    updateGoal: (state, action: PayloadAction<Goal>) => {
-      state.map[action.payload.id] = action.payload
+    addGoal(state, action: PayloadAction<Goal>) {
+      state.goalsMap[action.payload.id] = action.payload
+    },
+    updateGoal(state, action: PayloadAction<Goal>) {
+      const goal = action.payload
+      if (state.goalsMap[goal.id]) {
+        state.goalsMap[goal.id] = goal
+      }
+    },
+    removeGoal(state, action: PayloadAction<string>) {
+      delete state.goalsMap[action.payload]
     },
   },
 })
 
-export const { createGoal, updateGoal } = goalsSlice.actions
+export const { setGoals, addGoal, updateGoal, removeGoal } = goalsSlice.actions
 
-export const selectGoalsMap = (state: RootState) => state.goals.map
-export const selectGoalsList = (state: RootState) => state.goals.list
+// Selectors
+export const selectGoalsMap = (state: RootState) => state.goals.goalsMap
+export const selectGoalsArray = (state: RootState) =>
+  Object.values(state.goals.goalsMap)
 
 export default goalsSlice.reducer

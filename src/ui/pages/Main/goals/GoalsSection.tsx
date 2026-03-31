@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { createGoal as createGoalApi, getGoals } from '../../../../api/lib'
-import { createGoal as createGoalRedux, selectGoalsList } from '../../../../store/goalsSlice'
+import { addGoal as createGoalRedux, selectGoalsArray } from '../../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import {
   setContent as setContentRedux,
@@ -16,7 +16,7 @@ import GoalsContent from './GoalsContent'
 
 export default function GoalsSection() {
   const dispatch = useAppDispatch()
-  const goalIds = useAppSelector(selectGoalsList)
+  const goalIds = useAppSelector(selectGoalsArray).map((goal) => goal.id)
 
   useEffect(() => {
     async function fetch() {
