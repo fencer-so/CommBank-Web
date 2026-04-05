@@ -27,6 +27,7 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+  icon?: string // ✅ Add this line to store the emoji/icon
 }
 
 export interface Tag {
