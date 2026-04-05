@@ -1,15 +1,21 @@
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
-import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faDollarSign, IconDefinition, faSmile } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
 import React, { useEffect, useState } from 'react'
+import {BaseEmoji, Picker } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
 import styled from 'styled-components'
 import { updateGoal as updateGoalApi } from '../../../api/lib'
 import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { selectMode } from '../../../store/themeSlice'
+import EmojiPicker from '../../components/EmojiPicker'
 import DatePicker from '../../components/DatePicker'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 import { Theme } from '../../components/Theme'
 
 type Props = { goal: Goal }
@@ -21,6 +27,46 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+
+  const[emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
+  const [icon,setIcon]= useState<string | null>(null)
+
+  useEffect(() => {
+    setIcon(props.goal.icon)
+  }, [props.goal.id, props.goal.icon])
+
+  const hasIcon = () => icon != null
+
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+  
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+
+    // TODO(TASK-2) Stop event propogation
+    event.stopPropagation()
+
+    // TODO(TASK-2) Set icon locally
+    setIcon(emoji.native)
+
+    // TODO(TASK-2) Close emoji picker
+    setEmojiPickerIsOpen(false)
+
+    // TODO(TASK-2) Create updated goal locally
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+
+    // TODO(TASK-2) Update Redux store
+    dispatch(updateGoalRedux(updatedGoal))
+
+    // TODO(TASK-3) Update database
+  }
 
   useEffect(() => {
     setName(props.goal.name)
@@ -77,6 +123,23 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      
+      <EmojiPickerContainer
+        isOpen={emojiPickerIsOpen}
+        hasIcon={hasIcon()}
+        onClick={(event) => event.stopPropagation()}
+        >
+        <EmojiPicker onClick={pickEmojiOnClick} />
+      </EmojiPickerContainer>
+
+      <GoalIconContainer shouldShow={hasIcon()}>
+        <GoalIcon icon={goal.icon} onClick={addIconOnClick} />
+      </GoalIconContainer>
+
+      <AddIconButtonContainer shouldShow={!hasIcon()}>
+        <AddIconButton onClick={addIconOnClick} hasIcon={hasIcon()} />
+      </AddIconButtonContainer>
+
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -114,6 +177,21 @@ type FieldProps = { name: string; icon: IconDefinition }
 type AddIconButtonContainerProps = { shouldShow: boolean }
 type GoalIconContainerProps = { shouldShow: boolean }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '10rem' : '2rem')};
+  left: 0;
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${(props) => ( props.shouldShow ? 'flex' : 'none')}
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')}
+`
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
