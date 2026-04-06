@@ -22,7 +22,7 @@ export const goalsSlice = createSlice({
   reducers: {
     createGoal: (state, action: PayloadAction<Goal>) => {
       state.map[action.payload.id] = action.payload
-      state.list.push(action.payload.id)
+      state.list.unshift(action.payload.id)
     },
 
     updateGoal: (state, action: PayloadAction<Goal>) => {
