@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\assets",
+    "\\src\\assets\\images",
+    "\\src\\data",
+    "\\src\\store",
+    "\\src\\ui",
+    "\\src\\ui\\components",
+    "\\src\\ui\\features",
+    "\\src\\ui\\features\\goalmanager"
+  ],
+  "PreviewInSolutionExplorer": false
+}
