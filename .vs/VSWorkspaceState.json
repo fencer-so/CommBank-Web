@@ -1,16 +1,15 @@
 {
   "ExpandedNodes": [
     "",
-    "\\public",
-    "\\public\\favicon",
     "\\src",
+    "\\src\\assets",
+    "\\src\\assets\\images",
+    "\\src\\data",
+    "\\src\\store",
     "\\src\\ui",
-    "\\src\\ui\\surfaces",
-    "\\src\\ui\\surfaces\\drawer",
-    "\\src\\ui\\surfaces\\modal",
-    "\\src\\ui\\surfaces\\navbar",
-    "\\src\\ui\\utils"
+    "\\src\\ui\\components",
+    "\\src\\ui\\features",
+    "\\src\\ui\\features\\goalmanager"
   ],
-  "SelectedNode": "\\src\\ui\\features\\goalmanager\\GoalManager.tsx",
   "PreviewInSolutionExplorer": false
 }
