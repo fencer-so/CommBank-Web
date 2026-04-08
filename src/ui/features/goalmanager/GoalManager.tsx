@@ -11,10 +11,29 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import EmojiPicker from '../../components/EmojiPicker'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
+
+  const [icon, setIcon] = useState<string | null>(props.goal.icon ?? null)
+  const [showPicker, setShowPicker] = useState(false)
+
+  const handleEmojiClick = (emoji: any, event: React.MouseEvent) => {
+    const selectedEmoji = emoji.native
+
+    setIcon(selectedEmoji)
+    setShowPicker(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: selectedEmoji,
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
 
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
@@ -77,6 +96,19 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+
+      <button onClick={() => setShowPicker(!showPicker)}>
+        {icon ?? "🎯 Pick Icon"}
+      </button>
+
+      {showPicker && (
+        <EmojiPicker onClick={handleEmojiClick} />
+      )}
+      {icon && (
+        <div style={{ fontSize: "40px", marginBottom: "10px" }}>
+          {icon}
+        </div>
+      )}
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
