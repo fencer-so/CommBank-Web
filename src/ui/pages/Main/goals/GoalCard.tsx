@@ -13,7 +13,6 @@ type Props = { id: string }
 
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
-
   const goal = useAppSelector(selectGoalsMap)[props.id]
 
   const onClick = (event: React.MouseEvent) => {
@@ -27,6 +26,8 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {/* NEW: Display the icon emoji if the goal has one */}
+      {goal.icon && <GoalIcon>{goal.icon}</GoalIcon>}
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
@@ -43,13 +44,16 @@ const Container = styled(Card)`
   margin-left: 2rem;
   margin-right: 2rem;
   border-radius: 2rem;
-
   align-items: center;
+`
+/* NEW: Styled component to display the goal icon emoji on the card */
+const GoalIcon = styled.h1`
+  font-size: 3rem;
+  margin-top: 0.5rem;
 `
 const TargetAmount = styled.h2`
   font-size: 2rem;
 `
-
 const TargetDate = styled.h4`
   color: rgba(174, 174, 174, 1);
   font-size: 1rem;
