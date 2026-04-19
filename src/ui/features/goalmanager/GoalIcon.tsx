@@ -1,9 +1,10 @@
-import 'date-fns'
 import React from 'react'
 import styled from 'styled-components'
-import { TransparentButton } from '../../components/TransparentButton'
 
-type Props = { icon: string | null; onClick: (e: React.MouseEvent) => void }
+type Props = { 
+  icon: string | null; 
+  onClick: (event: React.MouseEvent) => void; 
+}
 
 export default function GoalIcon(props: Props) {
   return (
@@ -13,7 +14,19 @@ export default function GoalIcon(props: Props) {
   )
 }
 
+// Styled Components
 const Icon = styled.h1`
   font-size: 6rem;
   cursor: pointer;
+  margin: 0;
+`
+
+const TransparentButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `
