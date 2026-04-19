@@ -27,6 +27,9 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {/* Add this line right here to display the saved emoji */}
+      <Icon>{goal.icon || '💰'}</Icon> 
+      
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
@@ -46,6 +49,13 @@ const Container = styled(Card)`
 
   align-items: center;
 `
+
+// 2. ADD THE STYLED COMPONENT HERE
+const Icon = styled.h1`
+  font-size: 5.5rem;
+  margin: 0; /* Adding a zero margin helps it fit nicely without pushing the text down too far */
+`
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
 `
@@ -53,4 +63,4 @@ const TargetAmount = styled.h2`
 const TargetDate = styled.h4`
   color: rgba(174, 174, 174, 1);
   font-size: 1rem;
-`
+  `

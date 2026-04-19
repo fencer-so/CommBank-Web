@@ -37,3 +37,4 @@ export const selectGoalsMap = (state: RootState) => state.goals.map
 export const selectGoalsList = (state: RootState) => state.goals.list
 
 export default goalsSlice.reducer
+
