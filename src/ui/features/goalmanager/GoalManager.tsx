@@ -1,4 +1,4 @@
-import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+import { faCalendarAlt, faSmile } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
@@ -11,6 +11,10 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { BaseEmoji } from 'emoji-mart'                                    // ← NEW
+import EmojiPicker from '../../components/EmojiPicker'                   // ← NEW
+import GoalIcon from './GoalIcon'                         // ← NEW
+import { TransparentButton } from '../../components/TransparentButton'   // ← NEW
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,16 +25,20 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)                  // ← NEW
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)      // ← NEW
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)                                             // ← NEW
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,                                                     // ← NEW
   ])
 
   useEffect(() => {
@@ -75,9 +83,73 @@ export function GoalManager(props: Props) {
     }
   }
 
+  // ↓ NEW FUNCTIONS
+  const hasIcon = () => icon != null
+
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
+  const deleteIconOnClick = (event: React.MouseEvent) => {
+  event.stopPropagation()
+  setIcon(null)
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: null,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+  }
+  dispatch(updateGoalRedux(updatedGoal))
+  // TODO(TASK-3) Update database
+  updateGoalApi(props.goal.id, updatedGoal) 
+}
+
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setIcon(emoji.native)
+    setEmojiPickerIsOpen(false)
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    // TODO(TASK-3) Update database
+    updateGoalApi(props.goal.id, updatedGoal) 
+  }
+  // ↑ NEW FUNCTIONS
+
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+
+      {/* ↓ NEW SECTIONS */}
+      <AddIconButtonContainer hasIcon={hasIcon()}>
+        <TransparentButton onClick={addIconOnClick}>
+          <FontAwesomeIcon icon={faSmile} size="2x" />
+          <AddIconButtonText>Add icon</AddIconButtonText>
+        </TransparentButton>
+      </AddIconButtonContainer>
+
+      <GoalIconContainer shouldShow={hasIcon()}>
+        <GoalIcon icon={goal.icon} onClick={addIconOnClick} />
+        <TransparentButton onClick={deleteIconOnClick}>
+          <DeleteIconText>Remove icon</DeleteIconText>
+        </TransparentButton>
+      </GoalIconContainer>
+
+      <EmojiPickerContainer
+        isOpen={emojiPickerIsOpen}
+        hasIcon={hasIcon()}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <EmojiPicker onClick={pickEmojiOnClick} />
+      </EmojiPickerContainer>
+      {/* ↑ NEW SECTIONS */}
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -111,7 +183,7 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
+type AddIconButtonContainerProps = { hasIcon: boolean }        // ← UPDATED
 type GoalIconContainerProps = { shouldShow: boolean }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
@@ -131,7 +203,6 @@ const GoalManagerContainer = styled.div`
   width: 100%;
   position: relative;
 `
-
 const Group = styled.div`
   display: flex;
   flex-direction: row;
@@ -148,7 +219,6 @@ const NameInput = styled.input`
   font-weight: bold;
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
-
 const FieldName = styled.h1`
   font-size: 1.8rem;
   margin-left: 1rem;
@@ -160,7 +230,6 @@ const FieldContainer = styled.div`
   flex-direction: row;
   align-items: center;
   width: 20rem;
-
   svg {
     color: rgba(174, 174, 174, 1);
   }
@@ -178,7 +247,35 @@ const StringInput = styled.input`
   font-weight: bold;
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
-
 const Value = styled.div`
   margin-left: 2rem;
+`
+
+// ↓ NEW STYLED COMPONENTS
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${(props) => (props.hasIcon ? 'none' : 'flex')};
+  align-items: center;
+  margin-bottom: 1rem;
+`
+const AddIconButtonText = styled.h3`
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  color: rgba(174, 174, 174, 1);
+`
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
+// Fixed:
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '14rem' : '6rem')};
+  left: 20rem;
+  z-index: 100;
+`
+
+const DeleteIconText = styled.h3`
+  margin-left: 1rem;
+  font-size: 1.5rem;
+  color: rgba(174, 174, 174, 1);
 `
