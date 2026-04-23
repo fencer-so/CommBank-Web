@@ -17,3 +17,4 @@ const Icon = styled.h1`
   font-size: 6rem;
   cursor: pointer;
 `
+
