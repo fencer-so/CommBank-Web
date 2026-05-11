@@ -43,6 +43,8 @@ export async function createGoal(): Promise<Goal | null> {
   }
 }
 
+
+
 export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
   try {
     await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
