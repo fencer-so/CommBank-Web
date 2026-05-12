@@ -23,12 +23,20 @@ export default function GoalCard(props: Props) {
     dispatch(setIsOpenRedux(true))
   }
 
-  const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
+  const asLocaleDateString = (date: Date) =>
+    new Date(date).toLocaleDateString()
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      <Icon>{goal.icon || '🎯'}</Icon>
+
+      <GoalName>{goal.name}</GoalName>
+
       <TargetAmount>${goal.targetAmount}</TargetAmount>
-      <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+
+      <TargetDate>
+        {asLocaleDateString(goal.targetDate)}
+      </TargetDate>
     </Container>
   )
 }
@@ -45,9 +53,22 @@ const Container = styled(Card)`
   border-radius: 2rem;
 
   align-items: center;
+  justify-content: center;
 `
+
+const Icon = styled.div`
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+`
+
+const GoalName = styled.h3`
+  margin: 0;
+  font-size: 1.2rem;
+`
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
+  margin: 0.5rem 0;
 `
 
 const TargetDate = styled.h4`
