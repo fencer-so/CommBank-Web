@@ -3,6 +3,8 @@ import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { updateGoal as updateGoalApi } from '../../../api/lib'
@@ -21,16 +23,20 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [showPicker, setShowPicker] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon ?? null)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
@@ -75,9 +81,37 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const pickIconOnChange = (emoji: any) => {
+    setIcon(emoji.native)
+    setShowPicker(false)
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: emoji.native,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+
   return (
     <GoalManagerContainer>
-      <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      <HeaderGroup>
+        <IconSection>
+           {icon ? (
+             <GoalIcon onClick={() => setShowPicker(!showPicker)}>{icon}</GoalIcon>
+           ) : (
+             <AddIconButton onClick={() => setShowPicker(!showPicker)}>+</AddIconButton>
+           )}
+           {showPicker && (
+             <EmojiPickerContainerComponent>
+               <Picker onSelect={pickIconOnChange} />
+             </EmojiPickerContainerComponent>
+           )}
+        </IconSection>
+        <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      </HeaderGroup>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -181,4 +215,43 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+
+const HeaderGroup = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 1rem;
+`
+
+const IconSection = styled.div`
+  position: relative;
+  margin-right: 1.5rem;
+`
+
+const GoalIcon = styled.div`
+  font-size: 3.5rem;
+  cursor: pointer;
+  user-select: none;
+`
+
+const AddIconButton = styled.div`
+  font-size: 2rem;
+  cursor: pointer;
+  background: rgba(174, 174, 174, 0.2);
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }: { theme: Theme }) => theme.text};
+`
+
+const EmojiPickerContainerComponent = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  margin-top: 0.5rem;
 `
