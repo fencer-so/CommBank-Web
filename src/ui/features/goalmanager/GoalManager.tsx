@@ -7,7 +7,7 @@ import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { updateGoal as updateGoalApi } from '../../../api/lib'
+import { updateGoal as updateGoalApi, put, API_ROOT } from '../../../api/lib'
 import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
@@ -81,7 +81,7 @@ export function GoalManager(props: Props) {
     }
   }
 
-  const pickIconOnChange = (emoji: any) => {
+  const pickIconOnChange = async (emoji: any) => {
     setIcon(emoji.native)
     setShowPicker(false)
     const updatedGoal: Goal = {
@@ -92,7 +92,7 @@ export function GoalManager(props: Props) {
       icon: emoji.native,
     }
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(props.goal.id, updatedGoal)
+    await put(`${API_ROOT}/api/Goal/${props.goal.id}`, updatedGoal)
   }
 
   return (

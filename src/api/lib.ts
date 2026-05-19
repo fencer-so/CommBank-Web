@@ -51,3 +51,12 @@ export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boo
     return false
   }
 }
+
+export async function put<T>(url: string, payload: any): Promise<T | null> {
+  try {
+    const response = await axios.put(url, payload)
+    return response.data
+  } catch (error: any) {
+    return null
+  }
+}
