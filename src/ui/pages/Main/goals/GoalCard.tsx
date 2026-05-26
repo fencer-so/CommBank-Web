@@ -9,6 +9,8 @@ import {
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
 
+import { GoalIcon } from '../../../features/goalmanager/GoalIcon'
+
 type Props = { id: string }
 
 export default function GoalCard(props: Props) {
@@ -21,12 +23,21 @@ export default function GoalCard(props: Props) {
     dispatch(setContentRedux(goal))
     dispatch(setTypeRedux('Goal'))
     dispatch(setIsOpenRedux(true))
+    dispatch({ type: 'modal/setIsOpen', payload: true })
   }
 
   const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {goal.icon && (
+        <IconWrapper>
+          <GoalIcon icon={goal.icon} onClick={onClick} />
+        </IconWrapper>
+      )}
+
+      <GoalName>{goal.name}</GoalName>
+
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
@@ -46,6 +57,22 @@ const Container = styled(Card)`
 
   align-items: center;
 `
+
+const IconWrapper = styled.div`
+  margin-bottom: 0.5rem;
+
+  h1 {
+    font-size: 3rem; /* Kartın içində çox böyük olmaması üçün ölçünü tənzimlədik */
+    margin: 0;
+  }
+`
+const GoalName = styled.h3`
+  font-size: 1.4rem;
+  margin: 0.2rem 0;
+  font-weight: normal;
+  color: ${({ theme }) => theme.text};
+`
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
 `
