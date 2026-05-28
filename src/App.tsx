@@ -1,3 +1,4 @@
+import 'emoji-mart/css/emoji-mart.css';
 import { createTheme, ThemeProvider as ThemeProviderMui } from '@material-ui/core'
 import React, { useEffect } from 'react'
 import styled, { ThemeProvider } from 'styled-components'
