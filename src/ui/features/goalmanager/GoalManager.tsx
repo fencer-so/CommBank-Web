@@ -48,7 +48,11 @@ export function GoalManager(props: Props) {
     setIcon(goal.icon ?? '')
   }, [goal.name, goal.icon])
 
-  const handleIconChange = (nextIcon: string) => {
+  const pickEmojiOnClick = (emoji: any) => {
+    const nextIcon = emoji.native|| emoji?.id || emoji
+
+    if (!nextIcon) return
+
     setIcon(nextIcon)
     setIsEmojiPickerOpen(false)
 
@@ -57,7 +61,7 @@ export function GoalManager(props: Props) {
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: targetAmount ?? props.goal.targetAmount,
-      icon: nextIcon,
+      icon: nextIcon ?? props.goal.icon,
     }
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
@@ -118,7 +122,7 @@ export function GoalManager(props: Props) {
           </GoalIconContainer>
 
           <EmojiPickerContainer isOpen={isEmojiPickerOpen} hasIcon={!!icon}>
-            <EmojiPicker {...({ onSelect: (emoji: any) => handleIconChange(emoji.native) } as any)} />
+            <EmojiPicker {...({ onEmojiSelect: pickEmojiOnClick, onSelect: pickEmojiOnClick } as any)} />
           </EmojiPickerContainer>
         </IconSection>
 
