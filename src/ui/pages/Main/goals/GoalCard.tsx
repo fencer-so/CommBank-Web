@@ -27,6 +27,10 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {/* Add the icon here. Using a default emoji if none is set yet! */}
+      <div style={{ fontSize: '2rem', marginBottom: '8px' }}>
+        {goal.icon ? goal.icon : '🎯'}
+      </div>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
