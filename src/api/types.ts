@@ -20,6 +20,7 @@ export interface Application {
 export interface Goal {
   id: string
   name: string
+  icon: string | null
   targetAmount: number
   balance: number
   targetDate: Date
@@ -33,7 +34,6 @@ export interface Tag {
   id: string
   name: string
 }
-
 export interface Transaction {
   id: string
   transactionType: 'Debit' | 'Credit' | 'Transfer'
