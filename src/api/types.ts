@@ -20,6 +20,7 @@ export interface Application {
 export interface Goal {
   id: string
   name: string
+  icon: string | null   // 👈 add this line
   targetAmount: number
   balance: number
   targetDate: Date
