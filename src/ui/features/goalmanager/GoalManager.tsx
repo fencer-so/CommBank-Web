@@ -1,6 +1,7 @@
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { BaseEmoji } from 'emoji-mart'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
 import React, { useEffect, useState } from 'react'
@@ -10,7 +11,10 @@ import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
+import EmojiPicker from '../../components/EmojiPicker'
 import { Theme } from '../../components/Theme'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,16 +25,20 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon ?? null)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
@@ -40,10 +48,7 @@ export function GoalManager(props: Props) {
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
     setName(nextName)
-    const updatedGoal: Goal = {
-      ...props.goal,
-      name: nextName,
-    }
+    const updatedGoal: Goal = { ...props.goal, name: nextName }
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
   }
@@ -75,8 +80,35 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    const nextIcon = emoji.native
+    setIcon(nextIcon)
+    setShowEmojiPicker(false)
+    const updatedGoal: Goal = { ...props.goal, icon: nextIcon }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+
+  const toggleEmojiPicker = (e: React.MouseEvent) => {
+    setShowEmojiPicker(!showEmojiPicker)
+  }
+
   return (
     <GoalManagerContainer>
+      <GoalIconContainer shouldShow={!!icon}>
+        <GoalIcon icon={icon} onClick={toggleEmojiPicker} />
+      </GoalIconContainer>
+
+      <AddIconButtonContainer shouldShow={!icon}>
+        <AddIconButton hasIcon={!!icon} onClick={toggleEmojiPicker} />
+      </AddIconButtonContainer>
+
+      {showEmojiPicker && (
+        <EmojiPickerContainer isOpen={showEmojiPicker} hasIcon={!!icon}>
+          <EmojiPicker onClick={pickEmojiOnClick} />
+        </EmojiPickerContainer>
+      )}
+
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -131,7 +163,18 @@ const GoalManagerContainer = styled.div`
   width: 100%;
   position: relative;
 `
-
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+`
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+`
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  position: absolute;
+  top: ${({ hasIcon }) => (hasIcon ? '8rem' : '3rem')};
+  left: 0;
+  z-index: 100;
+`
 const Group = styled.div`
   display: flex;
   flex-direction: row;
@@ -148,7 +191,6 @@ const NameInput = styled.input`
   font-weight: bold;
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
-
 const FieldName = styled.h1`
   font-size: 1.8rem;
   margin-left: 1rem;
@@ -178,7 +220,6 @@ const StringInput = styled.input`
   font-weight: bold;
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
-
 const Value = styled.div`
   margin-left: 2rem;
 `
