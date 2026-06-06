@@ -11,6 +11,9 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker, BaseEmoji } from 'emoji-mart'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -74,46 +77,116 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+const [icon, setIcon] = useState<string | null>(null)
+const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
+const toggleEmojiPicker = (event: React.MouseEvent) => {
+  event.stopPropagation()
+  setIsEmojiPickerOpen((current) => !current)
+}
+const onSelectEmoji = (emoji: BaseEmoji) => {
+  const nextIcon = emoji.native ?? null
+  setIcon(nextIcon)
+  setIsEmojiPickerOpen(false)
 
-  return (
-    <GoalManagerContainer>
-      <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+  const updatedGoal: Goal = {
+    ...props.goal,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+    icon: nextIcon,
+  }
 
-      <Group>
-        <Field name="Target Date" icon={faCalendarAlt} />
-        <Value>
-          <DatePicker value={targetDate} onChange={pickDateOnChange} />
-        </Value>
-      </Group>
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+}
 
-      <Group>
-        <Field name="Target Amount" icon={faDollarSign} />
-        <Value>
-          <StringInput value={targetAmount ?? ''} onChange={updateTargetAmountOnChange} />
-        </Value>
-      </Group>
+return (
+  <GoalManagerContainer>
+    <Header>
+      <GoalIconContainer shouldShow={icon != null}>
+        <GoalIcon icon={icon} onClick={toggleEmojiPicker} />
+      </GoalIconContainer>
 
-      <Group>
-        <Field name="Balance" icon={faDollarSign} />
-        <Value>
-          <StringValue>{props.goal.balance}</StringValue>
-        </Value>
-      </Group>
+      <TitleGroup>
+        <AddIconButtonContainer shouldShow={icon == null}>
+          <AddIconButton onClick={toggleEmojiPicker}>+ Add icon</AddIconButton>
+        </AddIconButtonContainer>
 
-      <Group>
-        <Field name="Date Created" icon={faCalendarAlt} />
-        <Value>
-          <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
-        </Value>
-      </Group>
-    </GoalManagerContainer>
-  )
+        <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      </TitleGroup>
+    </Header>
+
+    <EmojiPickerContainer isOpen={isEmojiPickerOpen} hasIcon={icon != null}>
+      <Picker
+        native
+        title="Pick your goal icon"
+        emoji="point_up"
+        onSelect={onSelectEmoji}
+        showPreview={false}
+        showSkinTones={false}
+      />
+    </EmojiPickerContainer>
+
+    <Group>
+      <Field name="Target Date" icon={faCalendarAlt} />
+      <Value>
+        <DatePicker value={targetDate} onChange={pickDateOnChange} />
+      </Value>
+    </Group>
+
+    <Group>
+      <Field name="Target Amount" icon={faDollarSign} />
+      <Value>
+        <StringInput value={targetAmount ?? ''} onChange={updateTargetAmountOnChange} />
+      </Value>
+    </Group>
+
+    <Group>
+      <Field name="Balance" icon={faDollarSign} />
+      <Value>
+        <StringValue>{props.goal.balance}</StringValue>
+      </Value>
+    </Group>
+
+    <Group>
+      <Field name="Date Created" icon={faCalendarAlt} />
+      <Value>
+        <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
+      </Value>
+    </Group>
+  </GoalManagerContainer>
+)
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+// type AddIconButtonContainerProps = { shouldShow: boolean }
+// type GoalIconContainerProps = { shouldShow: boolean }
+// type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+const AddIconButtonContainer = styled.div<{ shouldShow: boolean }>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+  margin-bottom: 0.75rem;
+`
+
+const GoalIconContainer = styled.div<{ shouldShow: boolean }>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+  margin-right: 1.5rem;
+  margin-top: 0.5rem;
+`
+
+const EmojiPickerContainer = styled.div<{ isOpen: boolean; hasIcon: boolean }>`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(${({ hasIcon }) => (hasIcon ? '6.5rem' : '3rem')});
+  z-index: 10;
+
+  .emoji-mart {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
+`
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
@@ -130,6 +203,30 @@ const GoalManagerContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
+`
+const Header = styled.div`
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  position: relative;
+`
+
+const TitleGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`
+
+const AddIconButton = styled.button`
+  border: none;
+  outline: none;
+  background: rgba(174, 174, 174, 0.15);
+  color: rgba(174, 174, 174, 1);
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 999px;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
 `
 
 const Group = styled.div`
