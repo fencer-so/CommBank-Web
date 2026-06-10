@@ -52,22 +52,23 @@ export function GoalManager(props: Props) {
     setEmojiPickerIsOpen(true)
   }
 
-  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
-    event.stopPropagation()
-    setIcon(emoji.native)
-    setEmojiPickerIsOpen(false)
+const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+  event.stopPropagation()
 
-    const updatedGoal: Goal = {
-      ...props.goal,
-      icon: emoji.native,
-      name: name ?? props.goal.name,
-      targetDate: targetDate ?? props.goal.targetDate,
-      targetAmount: targetAmount ?? props.goal.targetAmount,
-    }
+  setIcon(emoji.native)
+  setEmojiPickerIsOpen(false)
 
-    dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(props.goal.id, updatedGoal)
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: emoji.native ?? props.goal.icon,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
   }
+
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+}
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
