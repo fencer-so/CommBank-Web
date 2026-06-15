@@ -43,11 +43,20 @@ export async function createGoal(): Promise<Goal | null> {
   }
 }
 
+/**
+ * Sends an Axios PUT request to the backend API to save 
+ * modifications (like your selected emoji icon) permanently.
+ */
 export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
   try {
-    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
+    // Explicitly destructuring to guarantee the icon is passed in the request body
+    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, {
+      ...updatedGoal,
+      icon: updatedGoal.icon
+    })
     return true
   } catch (error: any) {
+    console.error("Failed to persist goal modifications via PUT:", error)
     return false
   }
 }
