@@ -12,30 +12,38 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
 
+// Import the Emoji Picker components
+import { Picker } from 'emoji-mart'
+// @ts-ignore - This prevents the TypeScript warning for the CSS file
+import 'emoji-mart/css/emoji-mart.css'
+
 type Props = { goal: Goal }
+
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
 
-  const goal = useAppSelector(selectGoalsMap)[props.goal.id]
+  const goalsMap = useAppSelector(selectGoalsMap)
+  const goal = goalsMap[props.goal.id]
 
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  
+  // State to control if the emoji picker is visible
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   useEffect(() => {
+    // Safety check in case the goal isn't loaded yet
+    if (!props.goal) return;
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
-  }, [
-    props.goal.id,
-    props.goal.name,
-    props.goal.targetDate,
-    props.goal.targetAmount,
-  ])
+  }, [props.goal])
 
   useEffect(() => {
+    if (!goal) return;
     setName(goal.name)
-  }, [goal.name])
+  }, [goal])
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -67,7 +75,7 @@ export function GoalManager(props: Props) {
       const updatedGoal: Goal = {
         ...props.goal,
         name: name ?? props.goal.name,
-        targetDate: date ?? props.goal.targetDate,
+        targetDate: date,
         targetAmount: targetAmount ?? props.goal.targetAmount,
       }
       dispatch(updateGoalRedux(updatedGoal))
@@ -75,9 +83,38 @@ export function GoalManager(props: Props) {
     }
   }
 
+  // Function to handle when an emoji is clicked
+  const updateIcon = (emoji: any) => {
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: emoji.native, // Save the selected emoji
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+    setShowEmojiPicker(false) // Close the picker after selection
+  }
+
+  // If goal data is missing, don't crash
+  if (!goal) return null;
+
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+
+      {/* NEW SECTION: The Emoji Picker Button */}
+      <Group>
+        <EmojiButton onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+          {goal.icon ? goal.icon : '😀 Select Icon'}
+        </EmojiButton>
+        {showEmojiPicker && (
+          <div style={{ position: 'absolute', zIndex: 10, marginTop: '50px' }}>
+            <Picker onSelect={updateIcon} theme="dark" />
+          </div>
+        )}
+      </Group>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -110,12 +147,24 @@ export function GoalManager(props: Props) {
   )
 }
 
-type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+// --- STYLED COMPONENTS ---
 
-const Field = (props: FieldProps) => (
+const EmojiButton = styled.button`
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`
+
+const Field = (props: { name: string; icon: IconDefinition }) => (
   <FieldContainer>
     <FontAwesomeIcon icon={props.icon} size="2x" />
     <FieldName>{props.name}</FieldName>
@@ -138,7 +187,9 @@ const Group = styled.div`
   width: 100%;
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
+  position: relative;
 `
+
 const NameInput = styled.input`
   display: flex;
   background-color: transparent;
@@ -155,6 +206,7 @@ const FieldName = styled.h1`
   color: rgba(174, 174, 174, 1);
   font-weight: normal;
 `
+
 const FieldContainer = styled.div`
   display: flex;
   flex-direction: row;
@@ -165,10 +217,12 @@ const FieldContainer = styled.div`
     color: rgba(174, 174, 174, 1);
   }
 `
+
 const StringValue = styled.h1`
   font-size: 1.8rem;
   font-weight: bold;
 `
+
 const StringInput = styled.input`
   display: flex;
   background-color: transparent;
