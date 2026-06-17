@@ -11,6 +11,9 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import GoalIcon from './GoalIcon'
+import EmojiPicker from '../../components/EmojiPicker'
+import { BaseEmoji } from 'emoji-mart'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,11 +24,14 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(goal?.icon ?? null)
+  const[showPicker, setShowPicker] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon ?? null)
   }, [
     props.goal.id,
     props.goal.name,
@@ -106,6 +112,24 @@ export function GoalManager(props: Props) {
           <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
         </Value>
       </Group>
+      <Group>
+  <Field name="Icon" icon={faCalendarAlt} />
+  <Value>
+    <GoalIcon 
+      icon={icon} 
+      onClick={() => setShowPicker(!showPicker)} 
+    />
+    {showPicker && (
+      <EmojiPicker onClick={(emoji: any, event: any) => {
+  const selected = emoji.native
+  setIcon(selected)
+  setShowPicker(false)
+  dispatch(updateGoalRedux({ ...goal, icon: selected }))
+  updateGoalApi(goal.id, { ...goal, icon: selected })
+}} />
+    )}
+  </Value>
+</Group>
     </GoalManagerContainer>
   )
 }
