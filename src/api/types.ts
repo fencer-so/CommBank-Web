@@ -20,6 +20,7 @@ export interface Application {
 export interface Goal {
   id: string
   name: string
+  icon: string | null
   targetAmount: number
   balance: number
   targetDate: Date
@@ -28,7 +29,6 @@ export interface Goal {
   transactionIds: string[]
   tagIds: string[]
 }
-
 export interface Tag {
   id: string
   name: string
