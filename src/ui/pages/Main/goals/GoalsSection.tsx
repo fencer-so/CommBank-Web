@@ -21,8 +21,15 @@ export default function GoalsSection() {
   useEffect(() => {
     async function fetch() {
       const goals = await getGoals()
-      goals?.forEach((goal) => dispatch(createGoalRedux(goal)))
+
+      console.log('GOALS FROM API:', goals)
+
+      goals?.forEach((goal) => {
+        console.log('DISPATCHING:', goal)
+        dispatch(createGoalRedux(goal))
+      })
     }
+
     fetch()
   }, [dispatch])
 
