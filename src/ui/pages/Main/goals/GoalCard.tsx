@@ -16,6 +16,10 @@ export default function GoalCard(props: Props) {
 
   const goal = useAppSelector(selectGoalsMap)[props.id]
 
+  // THIS FIXES THE BLANK DASHBOARD CRASH: 
+  // If the goal hasn't loaded yet, don't try to draw the card
+  if (!goal) return null;
+
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
     dispatch(setContentRedux(goal))
@@ -27,6 +31,9 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {/* THIS IS YOUR NEW ICON DISPLAY */}
+      <GoalIcon>{goal.icon ? goal.icon : '🎯'}</GoalIcon>
+      
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
@@ -36,6 +43,7 @@ export default function GoalCard(props: Props) {
 const Container = styled(Card)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-height: 140px;
   min-width: 140px;
   width: 33%;
@@ -43,14 +51,22 @@ const Container = styled(Card)`
   margin-left: 2rem;
   margin-right: 2rem;
   border-radius: 2rem;
-
   align-items: center;
 `
+
+// NEW STYLING FOR YOUR EMOJI
+const GoalIcon = styled.div`
+  font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+`
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
+  margin: 0;
 `
 
 const TargetDate = styled.h4`
   color: rgba(174, 174, 174, 1);
   font-size: 1rem;
-`
+  margin-top: 0.5rem;
+` 
