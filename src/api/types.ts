@@ -27,6 +27,9 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+
+  // Task 2
+  icon?: string
 }
 
 export interface Tag {
