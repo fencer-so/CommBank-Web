@@ -1,4 +1,5 @@
 import React from 'react'
+import GoalIcon from '../../../features/goalmanager/GoalIcon'
 import styled from 'styled-components'
 import { selectGoalsMap } from '../../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
@@ -27,6 +28,7 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      <GoalIcon icon={goal.icon ?? '🎯'} onClick={() => {}} />
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
