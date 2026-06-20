@@ -11,6 +11,10 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import EmojiPicker from '../../components/EmojiPicker'
+import { BaseEmoji } from 'emoji-mart'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,16 +25,20 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
   useEffect(() => {
-    setName(props.goal.name)
-    setTargetDate(props.goal.targetDate)
-    setTargetAmount(props.goal.targetAmount)
-  }, [
+  setName(props.goal.name)
+  setTargetDate(props.goal.targetDate)
+  setTargetAmount(props.goal.targetAmount)
+  setIcon(props.goal.icon ?? null)
+}, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
@@ -74,10 +82,40 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+const onEmojiClick = (emoji: BaseEmoji) => {
+  setIcon(emoji.native)
 
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: emoji.native,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+  }
+
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+
+  setIsEmojiPickerOpen(false)
+}
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      {icon ? (
+  <GoalIcon
+    icon={icon}
+    onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+  />
+) : (
+  <AddIconButton
+    hasIcon={false}
+    onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+  />
+)}
+
+{isEmojiPickerOpen && (
+  <EmojiPicker onClick={onEmojiClick} />
+)}
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
