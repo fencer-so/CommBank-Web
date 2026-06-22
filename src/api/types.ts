@@ -6,6 +6,7 @@ export interface Account {
   accountType: AccountType
   applicationId: string
   transactionIds: string[]
+  
 }
 
 export interface Application {
@@ -27,6 +28,7 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+  icon?: string
 }
 
 export interface Tag {
