@@ -6,6 +6,7 @@ export interface Account {
   accountType: AccountType
   applicationId: string
   transactionIds: string[]
+  icon?: string
 }
 
 export interface Application {
