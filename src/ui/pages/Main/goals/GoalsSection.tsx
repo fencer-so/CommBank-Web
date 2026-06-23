@@ -1,9 +1,13 @@
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import { createGoal as createGoalApi, getGoals } from '../../../../api/lib'
-import { createGoal as createGoalRedux, selectGoalsList } from '../../../../store/goalsSlice'
+import {
+  createGoal as createGoalRedux,
+  createGoals as createGoalsRedux,
+  selectGoalsList,
+} from '../../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import {
   setContent as setContentRedux,
@@ -21,7 +25,9 @@ export default function GoalsSection() {
   useEffect(() => {
     async function fetch() {
       const goals = await getGoals()
-      goals?.forEach((goal) => dispatch(createGoalRedux(goal)))
+      if (goals != null) {
+        dispatch(createGoalsRedux(goals))
+      }
     }
     fetch()
   }, [dispatch])
