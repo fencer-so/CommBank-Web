@@ -3,60 +3,87 @@ import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
+import { BaseEmoji } from 'emoji-mart'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+
 import { updateGoal as updateGoalApi } from '../../../api/lib'
 import { Goal } from '../../../api/types'
-import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
+import {
+  selectGoalsMap,
+  updateGoal as updateGoalRedux,
+} from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { TransparentButton } from '../../components/TransparentButton'
+import EmojiPicker from './EmojiPicker'
+import GoalIcon from './GoalIcon'
 
-type Props = { goal: Goal }
+type Props = {
+  goal: Goal
+}
+
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
-
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
-    setName(goal.name)
-  }, [goal.name])
+    if (goal != null) {
+      setName(goal.name)
+      setIcon(goal.icon)
+    }
+  }, [goal])
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
     setName(nextName)
+
     const updatedGoal: Goal = {
       ...props.goal,
       name: nextName,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: icon ?? props.goal.icon,
     }
+
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
   }
 
-  const updateTargetAmountOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const updateTargetAmountOnChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const nextTargetAmount = parseFloat(event.target.value)
     setTargetAmount(nextTargetAmount)
+
     const updatedGoal: Goal = {
       ...props.goal,
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: nextTargetAmount,
+      icon: icon ?? props.goal.icon,
     }
+
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
   }
@@ -64,32 +91,86 @@ export function GoalManager(props: Props) {
   const pickDateOnChange = (date: MaterialUiPickersDate) => {
     if (date != null) {
       setTargetDate(date)
+
       const updatedGoal: Goal = {
         ...props.goal,
         name: name ?? props.goal.name,
-        targetDate: date ?? props.goal.targetDate,
+        targetDate: date,
         targetAmount: targetAmount ?? props.goal.targetAmount,
+        icon: icon ?? props.goal.icon,
       }
+
       dispatch(updateGoalRedux(updatedGoal))
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
 
+  const hasIcon = () => icon != null
+
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
+  const goalIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
+  const pickEmojiOnClick = (
+    emoji: BaseEmoji,
+    event: React.MouseEvent<HTMLElement>
+  ) => {
+    event.stopPropagation()
+    setIcon(emoji.native)
+    setEmojiPickerIsOpen(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: emoji.native,
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+
   return (
     <GoalManagerContainer>
+      <AddIconButtonContainer shouldShow={!hasIcon()}>
+        <TransparentButton onClick={addIconOnClick}>Add icon</TransparentButton>
+      </AddIconButtonContainer>
+
+      <GoalIconContainer shouldShow={hasIcon()}>
+        <GoalIcon icon={icon} onClick={goalIconOnClick} />
+      </GoalIconContainer>
+
+      <EmojiPickerContainer
+        isOpen={emojiPickerIsOpen}
+        hasIcon={hasIcon()}
+        onClick={(event) => event.stopPropagation()}
+      >
+        <EmojiPicker onClick={pickEmojiOnClick} />
+      </EmojiPickerContainer>
+
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+
+      <Group>
+        <Field name="Target Amount" icon={faDollarSign} />
+        <Value>
+          <StringInput
+            value={targetAmount ?? ''}
+            onChange={updateTargetAmountOnChange}
+          />
+        </Value>
+      </Group>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
         <Value>
           <DatePicker value={targetDate} onChange={pickDateOnChange} />
-        </Value>
-      </Group>
-
-      <Group>
-        <Field name="Target Amount" icon={faDollarSign} />
-        <Value>
-          <StringInput value={targetAmount ?? ''} onChange={updateTargetAmountOnChange} />
         </Value>
       </Group>
 
@@ -101,23 +182,38 @@ export function GoalManager(props: Props) {
       </Group>
 
       <Group>
-        <Field name="Date Created" icon={faCalendarAlt} />
+        <Field name="Created" icon={faCalendarAlt} />
         <Value>
-          <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
+          <StringValue>
+            {new Date(props.goal.created).toLocaleDateString()}
+          </StringValue>
         </Value>
       </Group>
     </GoalManagerContainer>
   )
 }
 
-type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+type FieldProps = {
+  name: string
+  icon: IconDefinition
+}
+
+type AddIconButtonContainerProps = {
+  shouldShow: boolean
+}
+
+type GoalIconContainerProps = {
+  shouldShow: boolean
+}
+
+type EmojiPickerContainerProps = {
+  isOpen: boolean
+  hasIcon: boolean
+}
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
-    <FontAwesomeIcon icon={props.icon} size="2x" />
+    <FontAwesomeIcon icon={props.icon} />
     <FieldName>{props.name}</FieldName>
   </FieldContainer>
 )
@@ -127,25 +223,55 @@ const GoalManagerContainer = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
+
   height: 100%;
   width: 100%;
   position: relative;
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+  margin-bottom: 1rem;
+
+  button {
+    color: rgba(174, 0, 65, 1);
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+  margin-bottom: 1rem;
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? '8rem' : '3rem')};
+  left: 0;
+  z-index: 10;
 `
 
 const Group = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
 `
+
 const NameInput = styled.input`
   display: flex;
+
   background-color: transparent;
   outline: none;
   border: none;
+
   font-size: 4rem;
   font-weight: bold;
+
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
 
@@ -155,27 +281,34 @@ const FieldName = styled.h1`
   color: rgba(174, 174, 174, 1);
   font-weight: normal;
 `
+
 const FieldContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+
   width: 20rem;
 
   svg {
     color: rgba(174, 174, 174, 1);
   }
 `
+
 const StringValue = styled.h1`
   font-size: 1.8rem;
   font-weight: bold;
 `
+
 const StringInput = styled.input`
   display: flex;
+
   background-color: transparent;
   outline: none;
   border: none;
+
   font-size: 1.8rem;
   font-weight: bold;
+
   color: ${({ theme }: { theme: Theme }) => theme.text};
 `
 
