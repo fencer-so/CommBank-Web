@@ -16,8 +16,6 @@ type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
 
-  const goal = useAppSelector(selectGoalsMap)[props.goal.id]
-
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
@@ -102,9 +100,6 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
