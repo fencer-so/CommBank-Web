@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import {
   setContent as setContentRedux,
   setIsOpen as setIsOpenRedux,
-  setType as setTypeRedux
+  setType as setTypeRedux,
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
 

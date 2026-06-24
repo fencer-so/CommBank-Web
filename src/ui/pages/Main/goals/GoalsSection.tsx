@@ -23,8 +23,8 @@ export default function GoalsSection() {
       const goals = await getGoals()
       goals?.forEach((goal) => dispatch(createGoalRedux(goal)))
     }
-fetch()
-   }, [])
+    fetch()
+  }, [])
 
   const onClick = async () => {
     const goal = await createGoalApi()
