@@ -20,10 +20,17 @@ export const goalsSlice = createSlice({
   name: 'goal',
   initialState,
   reducers: {
-    createGoal: (state, action: PayloadAction<Goal>) => {
+    /*createGoal: (state, action: PayloadAction<Goal>) => {
       state.map[action.payload.id] = action.payload
       state.list.push(action.payload.id)
-    },
+    },*/
+    createGoal: (state, action: PayloadAction<Goal>) => {
+  if (!state.map[action.payload.id]) {
+    state.map[action.payload.id] = action.payload
+    state.list.push(action.payload.id)
+  }
+},
+
 
     updateGoal: (state, action: PayloadAction<Goal>) => {
       state.map[action.payload.id] = action.payload
