@@ -7,10 +7,9 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { updateGoal as updateGoalApi } from '../../../api/lib'
 import { Goal } from '../../../api/types'
-import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
-import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import { updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
+import { useAppDispatch } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
-import { Theme } from '../../components/Theme'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {

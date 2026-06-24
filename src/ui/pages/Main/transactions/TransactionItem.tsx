@@ -26,8 +26,8 @@ export function TransactionItem(props: Props) {
       setTags(tags)
     }
 
-fetchAll()
-   }, [props.transaction.tagIds])
+    fetchAll()
+  }, [props.transaction.tagIds])
 
   return (
     <Container>
