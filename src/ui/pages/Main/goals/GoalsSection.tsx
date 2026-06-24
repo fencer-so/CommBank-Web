@@ -17,10 +17,13 @@ import GoalsContent from './GoalsContent'
 export default function GoalsSection() {
   const dispatch = useAppDispatch()
   const goalIds = useAppSelector(selectGoalsList)
-
+  //console.log("Goal IDs count:", goalIds.length)
+  console.log("Goal IDs count:", goalIds.length)
   useEffect(() => {
+    console.log("FETCH EFFECT RAN")
     async function fetch() {
       const goals = await getGoals()
+      //console.log("GOALS FROM API:", goals?.length)
       goals?.forEach((goal) => dispatch(createGoalRedux(goal)))
     }
     fetch()

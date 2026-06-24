@@ -10,25 +10,25 @@ type Props = { transaction: Transaction }
 export function TransactionItem(props: Props) {
   const [tags, setTags] = useState<Tag[] | null>(null)
 
-  useEffect(() => {
-    async function fetch(tagId: string): Promise<Tag> {
-      const response = await axios.get(`${API_ROOT}/api/Tag/${tagId}`)
-      return response.data
+useEffect(() => {
+  async function fetch(tagId: string): Promise<Tag> {
+    const response = await axios.get(`${API_ROOT}/api/Tag/${tagId}`)
+    return response.data
+  }
+
+  async function fetchAll() {
+    const tags: Tag[] = []
+
+    for (const tagId of props.transaction.tagIds) {
+      const tag = await fetch(tagId)
+      tags.push(tag)
     }
 
-    async function fetchAll() {
-      const tags: Tag[] = []
-      for (const tagId of props.transaction.tagIds) {
-        const tag = await fetch(tagId)
-        tags.push(tag)
-      }
+    setTags(tags)
+  }
 
-      setTags(tags)
-    }
-
-    fetchAll()
-  })
-
+  fetchAll()
+}, [props.transaction.tagIds])
   return (
     <Container>
       <Content>
