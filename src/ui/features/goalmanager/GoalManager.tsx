@@ -10,6 +10,7 @@ import { Goal } from '../../../api/types'
 import { updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
+import { Theme } from '../../components/Theme'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
