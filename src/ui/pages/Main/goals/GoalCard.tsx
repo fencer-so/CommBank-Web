@@ -13,7 +13,6 @@ type Props = { id: string }
 
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
-
   const goal = useAppSelector(selectGoalsMap)[props.id]
 
   const onClick = (event: React.MouseEvent) => {
@@ -27,6 +26,7 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      {goal.icon && <Icon>{goal.icon}</Icon>}
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
@@ -43,13 +43,14 @@ const Container = styled(Card)`
   margin-left: 2rem;
   margin-right: 2rem;
   border-radius: 2rem;
-
   align-items: center;
+`
+const Icon = styled.h1`
+  font-size: 3rem;
 `
 const TargetAmount = styled.h2`
   font-size: 2rem;
 `
-
 const TargetDate = styled.h4`
   color: rgba(174, 174, 174, 1);
   font-size: 1rem;
