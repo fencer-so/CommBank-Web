@@ -22,13 +22,10 @@ const Container = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   width: 400px;
-  padding: 4rem;
+  padding: 2rem 0;
   overflow-x: auto;
 
   ${media('<tablet')} {
     width: 100%;
-
-    padding-left: 0;
-    padding-right: 0;
   }
 `

@@ -1,5 +1,7 @@
 import { BaseEmoji, Picker } from 'emoji-mart'
+// @ts-ignore
 import 'emoji-mart/css/emoji-mart.css'
+import React from 'react'
 import { useAppSelector } from '../../store/hooks'
 import { selectMode } from '../../store/themeSlice'
 
@@ -10,11 +12,13 @@ export default function EmojiPicker(props: Props) {
 
   return (
     <Picker
-      theme={theme}
+      theme={theme === 'dark' ? 'dark' : 'light'}
       showPreview={false}
       showSkinTones={false}
-      onClick={props.onClick}
-      color="primary"
+      onClick={(emoji: BaseEmoji, event: React.MouseEvent) => {
+        props.onClick(emoji, event)
+      }}
+      color="#FDD835"
     />
   )
 }

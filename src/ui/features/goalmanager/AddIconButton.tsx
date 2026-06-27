@@ -1,6 +1,5 @@
 import { faSmile } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import 'date-fns'
 import React from 'react'
 import styled from 'styled-components'
 import { TransparentButton } from '../../components/TransparentButton'
@@ -12,7 +11,7 @@ export default function AddIconButton(props: Props) {
 
   return (
     <Container>
-      <TransparentButton onClick={props.onClick}>
+      <TransparentButton onClick={props.onClick} type="button">
         <FontAwesomeIcon icon={faSmile} size="2x" />
         <Text>Add icon</Text>
       </TransparentButton>
@@ -21,8 +20,9 @@ export default function AddIconButton(props: Props) {
 }
 
 const Container = styled.div`
+  display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
 `
 const Text = styled.span`
   margin-left: 0.6rem;

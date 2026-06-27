@@ -1,6 +1,4 @@
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { createGoal as createGoalApi, getGoals } from '../../../../api/lib'
 import { createGoal as createGoalRedux, selectGoalsList } from '../../../../store/goalsSlice'
@@ -17,18 +15,24 @@ import GoalsContent from './GoalsContent'
 export default function GoalsSection() {
   const dispatch = useAppDispatch()
   const goalIds = useAppSelector(selectGoalsList)
+  const hasFetched = useRef(false)
 
   useEffect(() => {
-    async function fetch() {
+    if (hasFetched.current) return
+    hasFetched.current = true
+
+    const fetchGoals = async () => {
       const goals = await getGoals()
-      goals?.forEach((goal) => dispatch(createGoalRedux(goal)))
+      if (goals != null) {
+        const recentGoals = goals.slice(-10)
+        recentGoals.forEach((goal) => dispatch(createGoalRedux(goal)))
+      }
     }
-    fetch()
+    fetchGoals()
   }, [dispatch])
 
   const onClick = async () => {
     const goal = await createGoalApi()
-
     if (goal != null) {
       dispatch(createGoalRedux(goal))
       dispatch(setContentRedux(goal))
@@ -41,11 +45,10 @@ export default function GoalsSection() {
     <Container>
       <TopGroup>
         <SectionHeading>Goals</SectionHeading>
-        <Icon onClick={onClick}>
-          <FontAwesomeIcon icon={faPlusCircle} size="2x" className="alert" />
+        <Icon onClick={onClick} aria-label="Create goal">
+          <PlusCircleSvg />
         </Icon>
       </TopGroup>
-
       <GoalsContent ids={goalIds} />
     </Container>
   )
@@ -77,3 +80,9 @@ const TopGroup = styled.div`
 const Icon = styled.a`
   margin-left: 1rem;
 `
+
+const PlusCircleSvg = () => (
+  <svg viewBox="0 0 448 512" width="20" height="20" fill="currentColor" aria-hidden="true">
+    <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32v112H80c-17.7 0-32 14.3-32 32s14.3 32 32 32h112v112c0 17.7 14.3 32 32 32s32-14.3 32-32V256h112c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80zM224 512C100.3 512 0 411.7 0 288S100.3 64 224 64s224 100.3 224 224-100.3 224-224 224z" />
+  </svg>
+)
