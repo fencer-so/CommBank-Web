@@ -15,6 +15,7 @@ export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
 
   const goal = useAppSelector(selectGoalsMap)[props.id]
+  console.log(goal)
 
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -27,6 +28,9 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      <span style={{ fontSize: "2rem"}}>
+      {goal?.icon ?? "🎯"}
+      </span>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
