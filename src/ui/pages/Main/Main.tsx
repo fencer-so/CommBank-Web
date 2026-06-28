@@ -16,11 +16,14 @@ export default function Main() {
         <Navbar />
 
         <Content>
-          <Group>
+          <LeftSection>
             <AccountsSection />
             <GoalsSection />
-          </Group>
-          <TransactionsSection />
+          </LeftSection>
+
+          <RightSection>
+            <TransactionsSection />
+          </RightSection>
         </Content>
       </MainSection>
     </Container>
@@ -29,50 +32,45 @@ export default function Main() {
 
 const Container = styled.div`
   display: flex;
-  flex-direction: row;
   width: 100vw;
   height: 100vh;
-  background-color: rgb(var(--background));
+  background: rgb(var(--background));
   overflow: hidden;
 `
 
-const MainSection = styled.div`
+const MainSection = styled.main`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 250px);
-  height: 100%;
-
-  ${media('<=tablet')} {
-    width: 100%;
-    overflow: scroll;
-  }
+  overflow: hidden;
 `
 
 const Content = styled.div`
+  flex: 1;
   display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: 100%;
-  justify-content: space-around;
-  align-items: center;
+  gap: 30px;
+  padding: 25px;
+  overflow-y: auto;
 
   ${media('<desktop')} {
     flex-direction: column;
-    justify-content: flex-start;
-    flex-wrap: none;
-    overflow-y: scroll;
+    padding: 20px;
   }
 `
 
-const Group = styled.div`
+const LeftSection = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
+  gap: 24px;
+`
 
-  ${media('<=tablet')} {
+const RightSection = styled.div`
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+
+  ${media('<desktop')} {
     width: 100%;
-    justify-content: flex-start;
   }
 `

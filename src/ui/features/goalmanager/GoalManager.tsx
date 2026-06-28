@@ -1,5 +1,5 @@
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
-import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
+import { faDollarSign, faSmile, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
@@ -11,7 +11,10 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
-
+import { BaseEmoji } from 'emoji-mart'
+import EmojiPicker from '../../components/EmojiPicker'
+import { setContent as setContentRedux, setIsOpen as setIsOpenRedux, setType as setTypeRedux } from '../../../store/modalSlice'
+import { TransparentButton } from '../../components/TransparentButton'
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
@@ -21,16 +24,30 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
+  
+  const hasIcon = () => icon != null
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
+  useEffect(() => {
+    setIcon(props.goal.icon)
+  }, [props.goal.id, props.goal.icon])
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
@@ -75,6 +92,28 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: MouseEvent) => {
+    event.stopPropagation()
+
+    const nextIcon = emoji.native ?? null
+    setIcon(nextIcon)
+    setEmojiPickerIsOpen(false)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: emoji.native ?? props.goal.icon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+
+    updateGoalApi(props.goal.id, updatedGoal)
+
+    dispatch(updateGoalRedux(updatedGoal))
+
+    // TODO(TASK-3) Update database
+  }
+
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
@@ -109,6 +148,7 @@ export function GoalManager(props: Props) {
     </GoalManagerContainer>
   )
 }
+
 
 type FieldProps = { name: string; icon: IconDefinition }
 type AddIconButtonContainerProps = { shouldShow: boolean }
