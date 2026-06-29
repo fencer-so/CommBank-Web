@@ -9,7 +9,9 @@ import {
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
 
-type Props = { id: string }
+type Props = {
+  id: string
+}
 
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
@@ -23,11 +25,17 @@ export default function GoalCard(props: Props) {
     dispatch(setIsOpenRedux(true))
   }
 
-  const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
+  const asLocaleDateString = (date: Date) =>
+    new Date(date).toLocaleDateString()
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      <Icon>{goal.icon ? goal.icon : "🎯"}</Icon>
+
+      <GoalName>{goal.name}</GoalName>
+
       <TargetAmount>${goal.targetAmount}</TargetAmount>
+
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
   )
@@ -36,18 +44,35 @@ export default function GoalCard(props: Props) {
 const Container = styled(Card)`
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
   min-height: 140px;
   min-width: 140px;
   width: 33%;
+
   cursor: pointer;
+
   margin-left: 2rem;
   margin-right: 2rem;
-  border-radius: 2rem;
 
-  align-items: center;
+  border-radius: 2rem;
 `
+
+const Icon = styled.div`
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+`
+
+const GoalName = styled.h3`
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+`
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
+  margin: 0.5rem 0;
 `
 
 const TargetDate = styled.h4`

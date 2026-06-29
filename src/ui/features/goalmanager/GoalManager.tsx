@@ -11,31 +11,54 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
+// Note: If you have emoji-mart installed, import the Picker here:
+// import { Picker } from 'emoji-mart'
+// import 'emoji-mart/css/emoji-mart.css'
 
 type Props = { goal: Goal }
+
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
-
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState<boolean>(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  const handleIconSelect = (nextIcon: string | null) => {
+    setIcon(nextIcon)
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: nextIcon,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+    setIsEmojiPickerOpen(false)
+  }
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -77,6 +100,35 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      <IconRowContainer>
+        <GoalIconContainer shouldShow={icon !== null}>
+          <GoalIcon icon={icon} onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)} />
+        </GoalIconContainer>
+
+        <AddIconButtonContainer shouldShow={icon === null}>
+          <AddIconButton hasIcon={icon !== null} onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)} />
+        </AddIconButtonContainer>
+
+        {isEmojiPickerOpen && (
+          <EmojiPickerContainer isOpen={isEmojiPickerOpen} hasIcon={icon !== null}>
+            {/* 
+              Example emoji-mart integration:
+              <Picker onSelect={(emoji: any) => handleIconSelect(emoji.native)} /> 
+            */}
+            <div style={{ border: '1px solid #ccc', padding: '10px', background: '#fff', borderRadius: '8px', zIndex: 10 }}>
+              <p style={{ margin: '0 0 10px 0', fontSize: '1.2rem', color: '#333' }}>Select an Icon:</p>
+              <div style={{ display: 'flex', gap: '10px', fontSize: '2rem', cursor: 'pointer' }}>
+                <span onClick={() => handleIconSelect('🎯')}>🎯</span>
+                <span onClick={() => handleIconSelect('💰')}>💰</span>
+                <span onClick={() => handleIconSelect('🚗')}>🚗</span>
+                <span onClick={() => handleIconSelect('🏠')}>🏠</span>
+                <span onClick={() => handleIconSelect(null)} style={{ fontSize: '1.2rem', alignSelf: 'center', color: 'red' }}>Clear</span>
+              </div>
+            </div>
+          </EmojiPickerContainer>
+        )}
+      </IconRowContainer>
+
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -130,6 +182,29 @@ const GoalManagerContainer = styled.div`
   height: 100%;
   width: 100%;
   position: relative;
+`
+
+const IconRowContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'block' : 'none')};
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'block' : 'none')};
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  position: absolute;
+  top: ${({ hasIcon }) => (hasIcon ? '7rem' : '3.5rem')};
+  left: 0;
+  z-index: 100;
 `
 
 const Group = styled.div`
