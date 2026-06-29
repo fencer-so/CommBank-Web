@@ -31,7 +31,13 @@ export function GoalManager(props: Props) {
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
     setIcon(props.goal.icon)
-  }, [props.goal.id, props.goal.name, props.goal.targetDate, props.goal.targetAmount, props.goal.icon])
+  }, [
+    props.goal.id,
+    props.goal.name,
+    props.goal.targetDate,
+    props.goal.targetAmount,
+    props.goal.icon,
+  ])
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -74,16 +80,16 @@ export function GoalManager(props: Props) {
     }
   }
 
-  const emojiPickerOnChange = (emoji: BaseEmoji) => {
+  const pickEmojiOnClick = (emoji: BaseEmoji) => {
     const nextIcon = emoji.native
     setIcon(nextIcon)
     setShowEmojiPicker(false)
     const updatedGoal: Goal = {
       ...props.goal,
+      icon: nextIcon,
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: targetAmount ?? props.goal.targetAmount,
-      icon: nextIcon,
     }
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
@@ -115,7 +121,11 @@ export function GoalManager(props: Props) {
         <AddIconButton hasIcon={icon !== null} onClick={addIconOnClick} />
       </IconRow>
 
-      {showEmojiPicker && <EmojiPickerContainer><EmojiPicker onClick={emojiPickerOnChange} /></EmojiPickerContainer>}
+      {showEmojiPicker && (
+        <EmojiPickerContainer>
+          <EmojiPicker onClick={pickEmojiOnClick} />
+        </EmojiPickerContainer>
+      )}
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
