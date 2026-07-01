@@ -17,9 +17,21 @@ export interface Application {
   userId: string
 }
 
+// export interface Goal {
+//   id: string
+//   name: string
+//   targetAmount: number
+//   balance: number
+//   targetDate: Date
+//   created: Date
+//   accountId: string
+//   transactionIds: string[]
+//   tagIds: string[]
+// }
 export interface Goal {
   id: string
   name: string
+  icon?: string
   targetAmount: number
   balance: number
   targetDate: Date

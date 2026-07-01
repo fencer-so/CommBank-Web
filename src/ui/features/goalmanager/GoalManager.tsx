@@ -1,3 +1,7 @@
+import { faSmile } from '@fortawesome/free-regular-svg-icons'
+import { Picker } from 'emoji-mart'
+import GoalIcon from './GoalIcon'
+import AddIconButton from './AddIconButton'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -5,12 +9,17 @@ import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import EmojiPicker from '../../components/EmojiPicker'
+import { BaseEmoji } from 'emoji-mart'
+
 import { updateGoal as updateGoalApi } from '../../../api/lib'
 import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+
+
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,6 +30,8 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
@@ -32,6 +43,10 @@ export function GoalManager(props: Props) {
     props.goal.targetDate,
     props.goal.targetAmount,
   ])
+  useEffect(() => {
+
+  setIcon(props.goal.icon ?? null)
+  }, [props.goal.id, props.goal.icon])
 
   useEffect(() => {
     setName(goal.name)
@@ -74,11 +89,54 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+  const hasIcon = () => icon != null
+
+const addIconOnClick = (event: React.MouseEvent) => {
+  event.stopPropagation()
+  setEmojiPickerIsOpen(true)
+}
+const emojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+  event.stopPropagation()
+
+  setIcon(emoji.native)
+
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: emoji.native,
+  }
+
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+
+  setEmojiPickerIsOpen(false)
+}
+
 
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
-
+      <GoalIconContainer shouldShow={hasIcon()}>
+  <GoalIcon icon={goal.icon ?? null} onClick={addIconOnClick} />
+</GoalIconContainer>
+{/* {hasIcon() && (
+  <GoalIcon
+    icon={icon}
+    onClick={addIconOnClick}
+  />
+)}
+ */}
+{/* <AddIconButtonContainer shouldShow={!hasIcon()}>
+  <AddIconButton onClick={addIconOnClick} />
+</AddIconButtonContainer> */}
+<AddIconButtonContainer shouldShow={!hasIcon()}>
+  <AddIconButton
+    hasIcon={hasIcon()}
+    onClick={addIconOnClick}
+  />
+</AddIconButtonContainer>
+{emojiPickerIsOpen && (
+  <EmojiPicker onClick={emojiOnClick} />
+)}
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
         <Value>
@@ -114,6 +172,15 @@ type FieldProps = { name: string; icon: IconDefinition }
 type AddIconButtonContainerProps = { shouldShow: boolean }
 type GoalIconContainerProps = { shouldShow: boolean }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+  margin-bottom: 2rem;
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+  margin-bottom: 2rem;
+`
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
@@ -121,6 +188,7 @@ const Field = (props: FieldProps) => (
     <FieldName>{props.name}</FieldName>
   </FieldContainer>
 )
+
 
 const GoalManagerContainer = styled.div`
   display: flex;
