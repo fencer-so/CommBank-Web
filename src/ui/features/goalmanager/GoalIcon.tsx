@@ -3,7 +3,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { TransparentButton } from '../../components/TransparentButton'
 
-type Props = { icon: string | null; onClick: (e: React.MouseEvent) => void }
+type Props = {
+  icon?: string
+  onClick: (e: React.MouseEvent) => void
+}
 
 export default function GoalIcon(props: Props) {
   return (
