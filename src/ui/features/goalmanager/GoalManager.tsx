@@ -44,7 +44,7 @@ export function GoalManager(props: Props) {
       targetAmount: targetAmount ?? props.goal.targetAmount,
     }
 
-    // TODO(TASK-3) Update database
+    updateGoalApi(props.goal.id, updatedGoal)
   }
 
   useEffect(() => {
