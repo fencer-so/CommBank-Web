@@ -1,68 +1,50 @@
-export interface Account {
-  id: string
-  number: number
-  name: string
-  balance: number
-  accountType: AccountType
-  applicationId: string
-  transactionIds: string[]
-}
+// src/api/types.ts
 
-export interface Application {
-  id: string
-  created: Date
-  modified: Date
-  accountType: AccountType
-  applicationStatus: ApplicationStatus
-  userId: string
-}
-
-export interface Goal {
-  id: string
-  name: string
-  targetAmount: number
-  balance: number
-  targetDate: Date
-  created: Date
-  accountId: string
-  transactionIds: string[]
-  tagIds: string[]
-}
-
-export interface Tag {
-  id: string
-  name: string
-}
-
-export interface Transaction {
-  id: string
-  transactionType: 'Debit' | 'Credit' | 'Transfer'
-  amount: number
-  dateTime: Date
-  goalId?: string
-  description: string
-  tagIds: string[]
-}
-
+// 👇 Add User type
 export interface User {
-  id: string
-  name: string
-  email: string
-  applicationIds: string[]
+    id: string;
+    name: string;
+    email: string;
+    // Add any other user fields your app uses
 }
 
-export enum AccountType {
-  GoalSaver,
-  NetBankSaver,
+// 👇 Update Goal type with all fields
+export interface Goal {
+    id: string;
+    name: string;
+    targetAmount: number;
+    targetDate: Date;
+    balance: number;
+    created: Date;
+    accountId: string;
+    transactionIds: string[];
+    tagIds: string[];
+    icon?: string;  // 👈 Your new field!
 }
 
-export enum ApplicationStatus {
-  Received,
-  Assigned,
-  UnderReview,
-  Approved,
-  Rejected,
+// 👇 Update Transaction with all fields
+export interface Transaction {
+    id: string;
+    amount: number;
+    description: string;
+    date: Date;
+    dateTime: string;      // 👈 Added for displaying date
+    transactionType: 'Credit' | 'Debit';  // 👈 Added for transaction type
+    goalId?: string;
+    tagIds: string[];      // 👈 Added for tags
+    // Add any other transaction fields your app uses
 }
 
-export type ModalContent = Goal
-export type ModalType = 'Goal'
+// 👇 Add Tag type
+export interface Tag {
+    id: string;
+    name: string;
+    color?: string;
+    // Add any other tag fields your app uses
+}
+
+// 👇 Update ModalContent to accept Goal or any other content
+export type ModalContent = Goal | Transaction | User | any;
+
+// 👇 Update ModalType to include 'Goal'
+export type ModalType = 'info' | 'warning' | 'error' | 'success' | 'confirm' | 'Goal';
