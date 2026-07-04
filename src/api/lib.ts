@@ -35,7 +35,9 @@ export async function createGoal(): Promise<Goal | null> {
   try {
     const response = await axios.post(`${API_ROOT}/api/Goal`, {
       userId: user.id,
-      targetDate: new Date(),
+      name: 'New Goal',
+      targetAmount: 0,
+      targetDate: new Date().toISOString(),
     })
     return response.data
   } catch (error: any) {
@@ -43,11 +45,11 @@ export async function createGoal(): Promise<Goal | null> {
   }
 }
 
-export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
+export async function updateGoal(goal: Goal): Promise<Goal | null> {
   try {
-    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
-    return true
+    const response = await axios.put(`${API_ROOT}/api/Goal/${goal.id}`, goal)
+    return response.data
   } catch (error: any) {
-    return false
+    return null
   }
 }
