@@ -1,39 +1,39 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Goal } from '../api/types'
-import { RootState } from './store'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Goal } from '../api/types';
 
 export interface GoalsState {
-  map: IdToGoal
-  list: string[]
+  map: IdToGoal;
+  list: string[];
 }
 
 export interface IdToGoal {
-  [id: string]: Goal
+  [id: string]: Goal;
 }
 
 const initialState: GoalsState = {
   map: {},
   list: [],
-}
+};
 
 export const goalsSlice = createSlice({
   name: 'goal',
   initialState,
   reducers: {
     createGoal: (state, action: PayloadAction<Goal>) => {
-      state.map[action.payload.id] = action.payload
-      state.list.push(action.payload.id)
+      const goal = action.payload;
+      state.map[goal.id] = goal;
+      state.list.push(goal.id);
     },
+    setGoals: (state, action: PayloadAction<Goal[]>) => {
+      state.map = {};
+      state.list = [];
+      action.payload.forEach(goal => {
+        state.map[goal.id] = goal;
+        state.list.push(goal.id);
+      });
+    }
+  }
+});
 
-    updateGoal: (state, action: PayloadAction<Goal>) => {
-      state.map[action.payload.id] = action.payload
-    },
-  },
-})
-
-export const { createGoal, updateGoal } = goalsSlice.actions
-
-export const selectGoalsMap = (state: RootState) => state.goals.map
-export const selectGoalsList = (state: RootState) => state.goals.list
-
-export default goalsSlice.reducer
+export const { createGoal, setGoals } = goalsSlice.actions;
+export default goalsSlice.reducer;

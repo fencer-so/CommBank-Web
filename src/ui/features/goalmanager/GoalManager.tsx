@@ -11,7 +11,8 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
-
+import { Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css'; // Idi design display layout single grid lo undadaniki must!
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
@@ -19,6 +20,13 @@ export function GoalManager(props: Props) {
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
   const [name, setName] = useState<string | null>(null)
+  const [icon, setIcon] = useState(props.goal?.icon || '🎯'); // Default fallback emoji string value '🎯'
+const [showPicker, setShowPicker] = useState(false);       // Dropdown popup display state switcher toggler
+
+const handleEmojiSelect = (emoji: any) => {
+  setIcon(emoji.native);    // Chosen pure raw string emoji key rendering value save chestundi
+  setShowPicker(false);     // Emoji select cheskogane window auto-close avthundi
+};
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
 
@@ -74,9 +82,46 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+const updateIconOnChange = async (nextIcon: string) => {
+    const updatedGoal: Goal = {
+        ...props.goal,
+        name: name ?? props.goal.name,
+        targetDate: targetDate ?? props.goal.targetDate,
+        targetAmount: targetAmount ?? props.goal.targetAmount,
+        icon: nextIcon
+    };
 
+    dispatch(updateGoalRedux(updatedGoal));
+
+    try {
+        await updateGoalApi(props.goal.id, updatedGoal);
+        console.log("Emoji saved to Azure perfectly!");
+    } catch (error) {
+        console.error("Failed to persist icon update:", error);
+    }
+};
   return (
     <GoalManagerContainer>
+    <Group>
+  <Field name="Goal Icon" />
+  <Value>
+    <div style={{ position: 'relative' }}>
+      <button 
+        type="button" 
+        onClick={() => setShowPicker(!showPicker)}
+        style={{ fontSize: '1.5rem', padding: '5px 10px', cursor: 'pointer', background: 'transparent', border: '1px solid #ccc', borderRadius: '4px' }}
+      >
+        {icon} Change Icon
+      </button>
+
+      {showPicker && (
+        <div style={{ position: 'absolute', zIndex: 100, marginTop: '5px' }}>
+          <Picker onSelect={handleEmojiSelect} title="Pick your goal icon" />
+        </div>
+      )}
+    </div>
+  </Value>
+</Group>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
