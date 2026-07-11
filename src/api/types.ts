@@ -27,6 +27,7 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+  icon?: string
 }
 
 export interface Tag {
@@ -59,7 +60,7 @@ export enum AccountType {
 export enum ApplicationStatus {
   Received,
   Assigned,
-  UnderReview,
+ UnderReview,
   Approved,
   Rejected,
 }
