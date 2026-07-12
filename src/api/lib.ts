@@ -51,3 +51,12 @@ export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boo
     return false
   }
 }
+
+export async function updateGoalIcon(goalId: string, updatedGoal: Goal): Promise<Goal | null> {
+  try {
+    const response = await axios.put<Goal>(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
+    return response.data
+  } catch (error: any) {
+    return null
+  }
+}
