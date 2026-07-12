@@ -6,7 +6,7 @@ import 'date-fns'
 import { BaseEmoji } from 'emoji-mart'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { updateGoal as updateGoalApi } from '../../../api/lib'
+import { updateGoal as updateGoalApi, updateGoalIcon } from '../../../api/lib'
 import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
@@ -89,22 +89,26 @@ export function GoalManager(props: Props) {
     }
   }
 
-  const updateIcon = (nextIcon: string | null) => {
-    setIcon(nextIcon)
+  const pickEmojiOnClick = async (emoji: BaseEmoji) => {
     const updatedGoal: Goal = {
       ...props.goal,
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: targetAmount ?? props.goal.targetAmount,
-      icon: nextIcon,
+      icon: emoji.native,
     }
-    dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(props.goal.id, updatedGoal)
-  }
 
-  const onEmojiClick = (emoji: BaseEmoji) => {
-    updateIcon(emoji.native)
-    setPickerOpen(false)
+    try {
+      const responseGoal = await updateGoalIcon(props.goal.id, updatedGoal)
+      if (responseGoal != null) {
+        setIcon(responseGoal.icon ?? null)
+        dispatch(updateGoalRedux(responseGoal))
+      }
+    } catch (error: any) {
+      console.error('Failed to update emoji:', error)
+    } finally {
+      setPickerOpen(false)
+    }
   }
 
   return (
@@ -134,7 +138,7 @@ export function GoalManager(props: Props) {
         hasIcon={!!icon}
         onClick={(e) => e.stopPropagation()}
       >
-        <EmojiPicker onClick={onEmojiClick} />
+        <EmojiPicker onClick={pickEmojiOnClick} />
       </EmojiPickerContainer>
 
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
