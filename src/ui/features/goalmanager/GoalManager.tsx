@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
 import React, { useEffect, useState } from 'react'
+import { Picker } from 'emoji-mart';
+import 'emoji-mart/css/emoji-mart.css';
 import styled from 'styled-components'
 import { updateGoal as updateGoalApi } from '../../../api/lib'
 import { Goal } from '../../../api/types'
@@ -21,11 +23,14 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<String | null>(props.goal.icon || null);
+  const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon || null);
   }, [
     props.goal.id,
     props.goal.name,
@@ -36,7 +41,19 @@ export function GoalManager(props: Props) {
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
-
+  const updateIconOnChange = (emoji: any) => {
+    const nextIcon = emoji.native;
+    setIcon(nextIcon);
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: nextIcon,
+    };
+    dispatch(updateGoalRedux(updatedGoal));
+    updateGoalApi(props.goal.id, updatedGoal);
+  };
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
     setName(nextName)
@@ -78,7 +95,26 @@ export function GoalManager(props: Props) {
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      <div style={{ position: 'relative', marginTop: '10px', marginBottom: '15px' }}>
+        <button
+          type="button"
+          onClick={() => setShowPicker(!showPicker)}
+          style={{ fontSize: '24px', padding: '5px 15px', cursor: 'pointer', backgroundColor: '#f0f0f0', border: '1px solid #ccc', borderRadius: '4px' }}
+        >
+          {icon || '➕'}
+        </button>
 
+        {showPicker && (
+          <div style={{ position: 'absolute', zIndex: 100, top: '45px', left: 0 }}>
+            <Picker
+              onSelect={(emoji) => {
+                updateIconOnChange(emoji);
+                setShowPicker(false);
+              }}
+            />
+          </div>
+        )}
+      </div>
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
         <Value>
