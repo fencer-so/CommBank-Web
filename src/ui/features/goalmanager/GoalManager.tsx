@@ -1,3 +1,6 @@
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
+import EmojiPicker from '../../components/EmojiPicker'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -21,7 +24,7 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
-
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
@@ -74,10 +77,40 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+  const toggleEmojiPicker = () => {
+  setIsEmojiPickerOpen(!isEmojiPickerOpen)
+  }
 
+  const onEmojiSelected = (emoji: any) => {
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: emoji.native,
+  }
+
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+
+  setIsEmojiPickerOpen(false)
+  }
   return (
-    <GoalManagerContainer>
-      <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+<GoalManagerContainer>
+
+  <GoalIcon
+    icon={goal.icon ?? null}
+    onClick={toggleEmojiPicker}
+  />
+
+  <AddIconButton
+    hasIcon={!!goal.icon}
+    onClick={toggleEmojiPicker}
+  />
+
+  {isEmojiPickerOpen && (
+    <EmojiPicker onClick={onEmojiSelected} />
+  )}
+
+  <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+  
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -111,9 +144,6 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
