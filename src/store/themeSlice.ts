@@ -1,5 +1,7 @@
+
 import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from './store'
+
 
 export interface ThemeState {
   mode: 'light' | 'dark'
