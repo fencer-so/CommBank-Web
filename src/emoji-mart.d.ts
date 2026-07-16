@@ -1,0 +1,1 @@
+declare module 'emoji-mart/css/emoji-mart.css'
