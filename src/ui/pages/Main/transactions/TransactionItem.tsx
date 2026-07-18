@@ -27,7 +27,7 @@ export function TransactionItem(props: Props) {
     }
 
     fetchAll()
-  })
+  }, [])
 
   return (
     <Container>
