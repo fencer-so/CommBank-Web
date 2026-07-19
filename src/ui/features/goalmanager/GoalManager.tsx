@@ -52,7 +52,7 @@ export function GoalManager(props: Props) {
       name: nextName,
     }
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(goal.id, updatedGoal)
+    updateGoalApi(updatedGoal)
   }
 
   const updateTargetAmountOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,7 @@ export function GoalManager(props: Props) {
       targetAmount: nextTargetAmount,
     }
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(goal.id, updatedGoal)
+    updateGoalApi(updatedGoal)
   }
 
   const pickDateOnChange = (date: MaterialUiPickersDate) => {
@@ -78,11 +78,11 @@ export function GoalManager(props: Props) {
         targetAmount: targetAmount ?? goal.targetAmount,
       }
       dispatch(updateGoalRedux(updatedGoal))
-      updateGoalApi(goal.id, updatedGoal)
+      updateGoalApi(updatedGoal)
     }
   }
 
-  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+  const pickEmojiOnClick = async (emoji: BaseEmoji, event: React.MouseEvent) => {
     event.stopPropagation()
 
     setIcon(emoji.native)
@@ -97,7 +97,11 @@ export function GoalManager(props: Props) {
     }
 
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(goal.id, updatedGoal)
+
+    const didUpdate = await updateGoalApi(updatedGoal)
+    if (!didUpdate) {
+      console.error('Failed to update goal emoji')
+    }
   }
 
   return (
