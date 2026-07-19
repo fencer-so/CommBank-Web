@@ -1,4 +1,4 @@
-import { faChartLine, faGear, faRocket } from '@fortawesome/free-solid-svg-icons'
+import { faChartLine, faCog, faRocket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import styled from 'styled-components'
@@ -26,7 +26,7 @@ export default function Navbar() {
 
       <Section>
         <DrawerItem isSelected={false}>
-          <FontAwesomeIcon icon={faGear} size="2x" />
+         <FontAwesomeIcon icon={faCog} size="2x" />
           <span>Settings</span>
         </DrawerItem>
       </Section>
