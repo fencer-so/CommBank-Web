@@ -1,3 +1,9 @@
+import { BaseEmoji } from 'emoji-mart'
+import { faSmile } from '@fortawesome/free-regular-svg-icons'
+
+import EmojiPicker from './EmojiPicker'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -21,6 +27,8 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
@@ -36,6 +44,10 @@ export function GoalManager(props: Props) {
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  useEffect(() => {
+  setIcon(props.goal.icon)
+  }, [props.goal.id, props.goal.icon])
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -74,11 +86,56 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+  const hasIcon = () => icon != null
 
-  return (
-    <GoalManagerContainer>
-      <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+const addIconOnClick = (event: React.MouseEvent) => {
+  event.stopPropagation()
+  setEmojiPickerIsOpen(true)
+}
 
+const goalIconOnClick = (event: React.MouseEvent) => {
+  event.stopPropagation()
+  setEmojiPickerIsOpen(true)
+}
+
+const emojiOnClick = (emoji: BaseEmoji) => {
+  setEmojiPickerIsOpen(false)
+  setIcon(emoji.native)
+
+  const updatedGoal: Goal = {
+    ...props.goal,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+    icon: emoji.native ?? props.goal.icon,
+  }
+
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+}
+
+ return (
+  <GoalManagerContainer>
+
+    {hasIcon() ? (
+      <GoalIcon
+        icon={icon}
+        onClick={goalIconOnClick}
+      />
+    ) : (
+      <AddIconButton
+        hasIcon={false}
+        onClick={addIconOnClick}
+      />
+    )}
+
+    {emojiPickerIsOpen && (
+      <EmojiPicker
+        onClick={emojiOnClick}
+      />
+    )}
+
+    <NameInput value={name ?? ''} onChange={updateNameOnChange} />
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
         <Value>
