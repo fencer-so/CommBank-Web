@@ -27,6 +27,7 @@ export interface Goal {
   accountId: string
   transactionIds: string[]
   tagIds: string[]
+  icon?: string
 }
 
 export interface Tag {
@@ -48,7 +49,7 @@ export interface User {
   id: string
   name: string
   email: string
-  applicationIds: string[]
+ applicationIds: string[]
 }
 
 export enum AccountType {
