@@ -6,6 +6,8 @@ import { TransparentButton } from '../../components/TransparentButton'
 type Props = { icon: string | null; onClick: (e: React.MouseEvent) => void }
 
 export default function GoalIcon(props: Props) {
+  if (!props.icon) return null
+
   return (
     <TransparentButton onClick={props.onClick}>
       <Icon>{props.icon}</Icon>
