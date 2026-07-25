@@ -6,5 +6,6 @@ type LogoProps = {
 }
 
 export default function Logo(props: LogoProps) {
-  return <img src={CommBank} height={props.height} width={props.width} />
+  return <img src={CommBank} height={props.height} width={props.width} alt="Commonwealth Bank Logo" />
 }
+
