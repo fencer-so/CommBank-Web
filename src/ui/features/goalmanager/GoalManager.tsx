@@ -15,7 +15,6 @@ import { Theme } from '../../components/Theme'
 import GoalIcon from './GoalIcon'
 import AddIconButton from './AddIconButton'
 import EmojiPicker from '../../components/EmojiPicker'
-import { BaseEmoji } from 'emoji-mart'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
