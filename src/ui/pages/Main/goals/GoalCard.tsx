@@ -26,13 +26,25 @@ export default function GoalCard(props: Props) {
   const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
 
   return (
-    <Container key={goal.id} onClick={onClick}>
-      <TargetAmount>${goal.targetAmount}</TargetAmount>
-      <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
-    </Container>
-  )
-}
+     <Container key={goal.id} onClick={onClick}>
+       <GoalIcon>{goal.icon}</GoalIcon>
 
+       <GoalName>{goal.name}</GoalName>
+
+       <TargetAmount>${goal.targetAmount}</TargetAmount>
+
+       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+       
+     </Container>
+   )
+}
+const GoalIcon = styled.h1`
+  font-size: 3rem;
+  margin: 0;
+`
+const GoalName = styled.h3`
+  margin: 0.5rem 0;
+`
 const Container = styled(Card)`
   display: flex;
   flex-direction: column;

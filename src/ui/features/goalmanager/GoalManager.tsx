@@ -11,6 +11,9 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import GoalIcon from './GoalIcon'
+import AddIconButton from './AddIconButton'
+import EmojiPicker from '../../components/EmojiPicker'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,11 +24,14 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon)
   }, [
     props.goal.id,
     props.goal.name,
@@ -74,7 +80,25 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+  const toggleEmojiPicker = () => {
+    setIsEmojiPickerOpen(!isEmojiPickerOpen)
+  }
 
+  const updateGoalIcon = (emoji: any) => {
+
+    setIcon(emoji.native)
+
+    const updatedGoal = {
+        ...props.goal,
+        icon: emoji.native
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+
+    setIsEmojiPickerOpen(false)
+  }
+  
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
@@ -85,7 +109,27 @@ export function GoalManager(props: Props) {
           <DatePicker value={targetDate} onChange={pickDateOnChange} />
         </Value>
       </Group>
+      
+      <Group>
 
+      <GoalIcon
+        icon={icon}
+        onClick={toggleEmojiPicker}
+        />
+
+       <AddIconButton
+         hasIcon={!!icon}
+         onClick={toggleEmojiPicker}
+        />
+        {
+           isEmojiPickerOpen &&
+          (
+           <EmojiPicker
+            onClick={updateGoalIcon}
+            />
+          )
+        }
+      </Group>
       <Group>
         <Field name="Target Amount" icon={faDollarSign} />
         <Value>
@@ -109,6 +153,7 @@ export function GoalManager(props: Props) {
     </GoalManagerContainer>
   )
 }
+
 
 type FieldProps = { name: string; icon: IconDefinition }
 type AddIconButtonContainerProps = { shouldShow: boolean }
