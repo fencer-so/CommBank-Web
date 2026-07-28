@@ -1,8 +1,11 @@
 import axios from 'axios'
 import { user } from '../data/user'
 import { Goal, Transaction, User } from './types'
-
-export const API_ROOT = 'https://fencer-commbank.azurewebsites.net'
+// Falls back to the shared public Forage demo backend. This server is
+// used concurrently by other students and can be slow or unresponsive
+// under load — set REACT_APP_API_ROOT in .env.local to point at a
+// local backend (e.g. http://localhost:5203) for reliable development.
+export const API_ROOT = process.env.REACT_APP_API_ROOT || 'https://fencer-commbank.azurewebsites.net'
 
 export async function getUser(): Promise<User | null> {
   try {

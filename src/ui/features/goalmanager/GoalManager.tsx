@@ -11,6 +11,10 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { BaseEmoji } from 'emoji-mart'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
+import EmojiPicker from '../../components/EmojiPicker'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -74,11 +78,42 @@ export function GoalManager(props: Props) {
       updateGoalApi(props.goal.id, updatedGoal)
     }
   }
+  const [isPickerOpen, setIsPickerOpen] = useState<boolean>(false)
+
+  const toggleIconPicker = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setIsPickerOpen((prev) => !prev)
+  }
+
+  const selectIconOnChange = (emoji: BaseEmoji) => {
+    setIsPickerOpen(false)
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+      icon: emoji.native,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
 
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+      <IconArea>
+        <GoalIconContainer shouldShow={!!goal.icon}>
+           <GoalIcon icon={goal.icon ?? null} onClick={toggleIconPicker} />
+        </GoalIconContainer>
 
+        <AddIconButtonContainer shouldShow={!goal.icon}>
+          <AddIconButton hasIcon={!!goal.icon} onClick={toggleIconPicker} />
+        </AddIconButtonContainer>
+
+        <EmojiPickerContainer isOpen={isPickerOpen} hasIcon={!!goal.icon}>
+          {isPickerOpen && <EmojiPicker onClick={selectIconOnChange} />}
+        </EmojiPickerContainer>
+      </IconArea>
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
         <Value>
@@ -181,4 +216,25 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+const IconArea = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${(props) => (props.shouldShow ? 'flex' : 'none')};
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${(props) => (props.isOpen ? 'block' : 'none')};
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
 `
