@@ -85,7 +85,7 @@ export function GoalManager(props: Props) {
     setIsPickerOpen((prev) => !prev)
   }
 
-  const selectIconOnChange = (emoji: BaseEmoji) => {
+  const pickEmojiOnClick = (emoji: BaseEmoji) => {
     setIsPickerOpen(false)
     const updatedGoal: Goal = {
       ...props.goal,
@@ -111,7 +111,7 @@ export function GoalManager(props: Props) {
         </AddIconButtonContainer>
 
         <EmojiPickerContainer isOpen={isPickerOpen} hasIcon={!!goal.icon}>
-          {isPickerOpen && <EmojiPicker onClick={selectIconOnChange} />}
+          {isPickerOpen && <EmojiPicker onClick={pickEmojiOnClick} />}
         </EmojiPickerContainer>
       </IconArea>
       <Group>
