@@ -18,15 +18,18 @@ export interface Application {
 }
 
 export interface Goal {
-  id: string
-  name: string
-  targetAmount: number
-  balance: number
-  targetDate: Date
-  created: Date
-  accountId: string
-  transactionIds: string[]
-  tagIds: string[]
+    id: string;
+    name: string;
+    targetAmount: number;
+    targetDate: Date;
+    balance: number;
+    created: Date;
+    transactionIds: string[];
+    tagIds: string[];
+
+    icon?: string;
+
+    userId: string;
 }
 
 export interface Tag {

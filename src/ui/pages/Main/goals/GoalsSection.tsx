@@ -18,14 +18,17 @@ export default function GoalsSection() {
   const dispatch = useAppDispatch()
   const goalIds = useAppSelector(selectGoalsList)
 
-  useEffect(() => {
-    async function fetch() {
-      const goals = await getGoals()
-      goals?.forEach((goal) => dispatch(createGoalRedux(goal)))
-    }
-    fetch()
-  }, [dispatch])
+useEffect(() => {
+  async function fetch() {
+    const goals = await getGoals();
 
+    console.log("GOALS FROM API:", goals);
+
+    goals?.forEach((goal) => dispatch(createGoalRedux(goal)));
+  }
+
+  fetch();
+}, [dispatch]);
   const onClick = async () => {
     const goal = await createGoalApi()
 
