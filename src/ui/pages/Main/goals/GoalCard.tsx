@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '../../../../store/hooks'
 import {
   setContent as setContentRedux,
   setIsOpen as setIsOpenRedux,
-  setType as setTypeRedux
+  setType as setTypeRedux,
 } from '../../../../store/modalSlice'
 import { Card } from '../../../components/Card'
 
@@ -14,7 +14,22 @@ type Props = { id: string }
 export default function GoalCard(props: Props) {
   const dispatch = useAppDispatch()
 
-  const goal = useAppSelector(selectGoalsMap)[props.id]
+  const goalMap = useAppSelector(selectGoalsMap)
+
+  console.log("Goal Map:", goalMap)
+  console.log("Current ID:", props.id)
+
+  const goal = goalMap[props.id]
+
+  console.log("Goal:", goal)
+
+  if (!goal) {
+    return (
+      <div style={{ color: "red", padding: "20px" }}>
+        Goal not found: {props.id}
+      </div>
+    )
+  }
 
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -23,12 +38,20 @@ export default function GoalCard(props: Props) {
     dispatch(setIsOpenRedux(true))
   }
 
-  const asLocaleDateString = (date: Date) => new Date(date).toLocaleDateString()
+  const asLocaleDateString = (date: Date) =>
+    new Date(date).toLocaleDateString()
 
   return (
-    <Container key={goal.id} onClick={onClick}>
+    <Container onClick={onClick}>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
-      <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
+
+      <TargetDate>
+        {asLocaleDateString(goal.targetDate)}
+      </TargetDate>
+
+      <GoalIcon>
+        {goal.icon}
+      </GoalIcon>
     </Container>
   )
 }
@@ -43,9 +66,9 @@ const Container = styled(Card)`
   margin-left: 2rem;
   margin-right: 2rem;
   border-radius: 2rem;
-
   align-items: center;
 `
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
 `
@@ -53,4 +76,10 @@ const TargetAmount = styled.h2`
 const TargetDate = styled.h4`
   color: rgba(174, 174, 174, 1);
   font-size: 1rem;
+`
+
+const GoalIcon = styled.div`
+  font-size: 4rem;
+  margin-top: auto;
+  margin-bottom: 1rem;
 `
