@@ -6,9 +6,11 @@ type Props = { transactions: Transaction[] | null }
 
 export default function TransactionsContent(props: Props) {
   if (!props.transactions) return null
+  const sortedTransactions = [...props.transactions].sort(sortByDateDesc)
+
   return (
     <>
-      {props.transactions.sort(sortByDateDesc).map((transaction) => (
+      {sortedTransactions.map((transaction) => (
         <TransactionItem transaction={transaction} />
       ))}
     </>
