@@ -1,0 +1,103 @@
+{
+  "info": {
+    "name": "CommBank API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection for testing CommBank Goal API endpoints locally."
+  },
+  "item": [
+    {
+      "name": "Get User Goals",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/Goal/User/{{user_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Goal",
+            "User",
+            "{{user_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Goal By Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/Goal/{{goal_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Goal",
+            "{{goal_id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Goal",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"62a29c15f4605c4c9fa7f306\",\n  \"targetDate\": \"2026-08-07T00:00:00.000Z\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Goal",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Goal"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Goal Emoji",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": \"{{goal_id}}\",\n  \"name\": null,\n  \"targetAmount\": 0,\n  \"targetDate\": \"2026-08-07T00:00:00.000Z\",\n  \"balance\": 0,\n  \"created\": \"2026-08-07T14:49:23.1009171+05:30\",\n  \"transactionIds\": null,\n  \"tagIds\": null,\n  \"userId\": \"62a29c15f4605c4c9fa7f306\",\n  \"icon\": \"🎯\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/Goal/{{goal_id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "Goal",
+            "{{goal_id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
