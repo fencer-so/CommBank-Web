@@ -2,8 +2,7 @@ import axios from 'axios'
 import { user } from '../data/user'
 import { Goal, Transaction, User } from './types'
 
-export const API_ROOT = 'https://fencer-commbank.azurewebsites.net'
-
+export const API_ROOT = 'http://localhost:11366'
 export async function getUser(): Promise<User | null> {
   try {
     const response = await axios.get(`${API_ROOT}/api/User/${user.id}`)
@@ -37,6 +36,7 @@ export async function createGoal(): Promise<Goal | null> {
       userId: user.id,
       targetDate: new Date(),
     })
+
     return response.data
   } catch (error: any) {
     return null

@@ -87,69 +87,81 @@ export function GoalManager(props: Props) {
   }
 
   const onEmojiSelect = (emoji: any) => {
-    const updatedGoal: Goal = {
-      ...props.goal,
-      icon: emoji.native,
-      name: name ?? props.goal.name,
-      targetDate: targetDate ?? props.goal.targetDate,
-      targetAmount: targetAmount ?? props.goal.targetAmount,
-    }
-
-    setIcon(emoji.native)
-    dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(props.goal.id, updatedGoal)
-    setIsPickerOpen(false)
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: emoji.native,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
   }
+  
+  setIcon(emoji.native)
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+  setIsPickerOpen(false)
+  }
+  
 
   return (
-    <GoalManagerContainer>
-      {/* Emoji Icon Display & Picker Trigger */}
-      <IconSection>
-        <GoalIconContainer 
-          shouldShow={Boolean(icon)} 
-          onClick={() => setIsPickerOpen(!isPickerOpen)}
+  <GoalManagerContainer>
+    <IconSection>
+      <GoalIconContainer
+        shouldShow={Boolean(icon)}
+        onClick={() => setIsPickerOpen(!isPickerOpen)}
+      >
+        {icon || <FontAwesomeIcon icon={faSmile} />}
+      </GoalIconContainer>
+
+      {isPickerOpen && (
+        <EmojiPickerContainer
+          isOpen={isPickerOpen}
+          hasIcon={Boolean(icon)}
         >
-          {icon || <FontAwesomeIcon icon={faSmile} size="2x" />}
-        </GoalIconContainer>
+          <Picker onSelect={onEmojiSelect} />
+        </EmojiPickerContainer>
+      )}
+    </IconSection>
 
-        {isPickerOpen && (
-          <EmojiPickerContainer isOpen={isPickerOpen} hasIcon={Boolean(icon)}>
-            <Picker onSelect={onEmojiSelect} />
-          </EmojiPickerContainer>
-        )}
-      </IconSection>
+    <NameInput
+      value={name ?? ''}
+      onChange={updateNameOnChange}
+      placeholder="Goal Name"
+    />
 
-      <NameInput value={name ?? ''} onChange={updateNameOnChange} placeholder="Goal Name" />
+    <Group>
+      <Field name="Target Date" icon={faCalendarAlt} />
+      <Value>
+        <DatePicker value={targetDate} onChange={pickDateOnChange} />
+      </Value>
+    </Group>
 
-      <Group>
-        <Field name="Target Date" icon={faCalendarAlt} />
-        <Value>
-          <DatePicker value={targetDate} onChange={pickDateOnChange} />
-        </Value>
-      </Group>
+    <Group>
+      <Field name="Target Amount" icon={faDollarSign} />
+      <Value>
+        <StringInput
+          value={targetAmount ?? ''}
+          onChange={updateTargetAmountOnChange}
+        />
+      </Value>
+    </Group>
 
-      <Group>
-        <Field name="Target Amount" icon={faDollarSign} />
-        <Value>
-          <StringInput value={targetAmount ?? ''} onChange={updateTargetAmountOnChange} />
-        </Value>
-      </Group>
+    <Group>
+      <Field name="Balance" icon={faDollarSign} />
+      <Value>
+        <StringValue>{props.goal.balance}</StringValue>
+      </Value>
+    </Group>
 
-      <Group>
-        <Field name="Balance" icon={faDollarSign} />
-        <Value>
-          <StringValue>{props.goal.balance}</StringValue>
-        </Value>
-      </Group>
-
-      <Group>
-        <Field name="Date Created" icon={faCalendarAlt} />
-        <Value>
-          <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
-        </Value>
-      </Group>
-    </GoalManagerContainer>
-  )
+    <Group>
+      <Field name="Date Created" icon={faCalendarAlt} />
+      <Value>
+        <StringValue>
+          {new Date(props.goal.created).toLocaleDateString()}
+        </StringValue>
+      </Value>
+    </Group>
+  </GoalManagerContainer>
+)
 }
 
 type FieldProps = { name: string; icon: IconDefinition }

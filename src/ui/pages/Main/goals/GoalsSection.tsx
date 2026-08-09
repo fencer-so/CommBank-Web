@@ -27,15 +27,17 @@ export default function GoalsSection() {
   }, [dispatch])
 
   const onClick = async () => {
-    const goal = await createGoalApi()
+  const goal = await createGoalApi()
 
-    if (goal != null) {
-      dispatch(createGoalRedux(goal))
-      dispatch(setContentRedux(goal))
-      dispatch(setTypeRedux('Goal'))
-      dispatch(setIsOpenRedux(true))
-    }
+  if (goal != null) {
+    dispatch(createGoalRedux(goal))
+    dispatch(setContentRedux(goal))
+    dispatch(setTypeRedux('Goal'))
+    dispatch(setIsOpenRedux(true))
   }
+}
+
+   
 
   return (
     <Container>
@@ -74,6 +76,6 @@ const TopGroup = styled.div`
   }
 `
 
-const Icon = styled.a`
+const Icon = styled.button`
   margin-left: 1rem;
 `
