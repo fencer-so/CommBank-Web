@@ -25,6 +25,7 @@ export const GoalManager = React.memo((props: Props) => {
 
   const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
+  // Inject emoji‑mart CSS once
   useEffect(() => {
     if (!document.querySelector('link[href*="emoji-mart"]')) {
       const link = document.createElement('link')
@@ -37,6 +38,7 @@ export const GoalManager = React.memo((props: Props) => {
 
   if (!goal) return null
 
+  // ---------- Handlers ----------
   const updateName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const updatedGoal: Goal = { ...goal, name: e.target.value }
     dispatch(updateGoalRedux(updatedGoal))
@@ -65,10 +67,11 @@ export const GoalManager = React.memo((props: Props) => {
     updateGoalApi(goal.id, updatedGoal)
   }
 
+  // ✅ This is the "pickEmojiOnClick" handler – updates icon and persists via PUT
   const updateIcon = (newIcon: string | null) => {
     const updatedGoal: Goal = { ...goal, icon: newIcon ?? undefined }
     dispatch(updateGoalRedux(updatedGoal))
-    updateGoalApi(goal.id, updatedGoal)
+    updateGoalApi(goal.id, updatedGoal) // ← PUT request saves to backend
     setIsEmojiPickerOpen(false)
   }
 
@@ -89,6 +92,7 @@ export const GoalManager = React.memo((props: Props) => {
 
   const hasIcon = goal.icon != null
 
+  // ---------- Render ----------
   return (
     <GoalManagerContainer onClick={closePicker}>
       <IconSection>
@@ -109,7 +113,7 @@ export const GoalManager = React.memo((props: Props) => {
               set="apple"
               title="Choose a goal icon"
               emoji="point_up"
-              onSelect={handleEmojiSelect}
+              onSelect={handleEmojiSelect} // ← emoji selection handler
             />
           </EmojiPickerContainer>
         )}
