@@ -1,19 +1,33 @@
-import 'date-fns'
 import React from 'react'
 import styled from 'styled-components'
-import { TransparentButton } from '../../components/TransparentButton'
 
-type Props = { icon: string | null; onClick: (e: React.MouseEvent) => void }
+type Props = {
+  icon: string
+  onClick: (e: React.MouseEvent) => void
+}
 
-export default function GoalIcon(props: Props) {
+export default function GoalIcon({ icon, onClick }: Props) {
   return (
-    <TransparentButton onClick={props.onClick}>
-      <Icon>{props.icon}</Icon>
+    <TransparentButton onClick={onClick}>
+      <Icon>{icon}</Icon>
     </TransparentButton>
   )
 }
 
+const TransparentButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  &:focus {
+    outline: none;
+  }
+`
+
 const Icon = styled.h1`
-  font-size: 6rem;
+  font-size: 5.5rem;
+  margin: 0;
+  padding: 0;
+  line-height: 1;
   cursor: pointer;
 `

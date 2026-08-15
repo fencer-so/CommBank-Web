@@ -1,31 +1,36 @@
-import { faSmile } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import 'date-fns'
 import React from 'react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSmile } from '@fortawesome/free-solid-svg-icons'
 import styled from 'styled-components'
-import { TransparentButton } from '../../components/TransparentButton'
 
-type Props = { hasIcon: boolean; onClick: (event: React.MouseEvent) => void }
+type Props = {
+  onClick: (e: React.MouseEvent) => void
+}
 
-export default function AddIconButton(props: Props) {
-  if (props.hasIcon) return null
-
+export default function AddIconButton({ onClick }: Props) {
   return (
-    <Container>
-      <TransparentButton onClick={props.onClick}>
-        <FontAwesomeIcon icon={faSmile} size="2x" />
-        <Text>Add icon</Text>
-      </TransparentButton>
-    </Container>
+    <TransparentButton onClick={onClick}>
+      <FontAwesomeIcon icon={faSmile} size="2x" />
+      <AddIconButtonText>Add icon</AddIconButtonText>
+    </TransparentButton>
   )
 }
 
-const Container = styled.div`
-  flex-direction: row;
-  align-items: flex-end;
+// Use TransparentButton as per spec – define it here if missing
+const TransparentButton = styled.button`
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  &:focus {
+    outline: none;
+  }
 `
-const Text = styled.span`
-  margin-left: 0.6rem;
-  font-size: 1.5rem;
-  color: rgba(174, 174, 174, 1);
+
+const AddIconButtonText = styled.span`
+  font-size: 1.2rem;
+  font-weight: 500;
 `
