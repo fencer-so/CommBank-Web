@@ -11,6 +11,7 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { EmojiData } from 'emoji-mart'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -72,6 +73,16 @@ export function GoalManager(props: Props) {
       }
       dispatch(updateGoalRedux(updatedGoal))
       updateGoalApi(props.goal.id, updatedGoal)
+
+      const pickEmojiOnClick = (emoji: any) => {
+        const updatedGoal: Goal = {
+          ...props.goal,
+          icon: emoji.native,
+        }
+
+        dispatch(updateGoalRedux(updatedGoal))
+        updateGoalApi(props.goal.id,updatedGoal)
+      }
     }
   }
 
