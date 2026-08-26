@@ -31,23 +31,20 @@ export async function getGoals(): Promise<Goal[] | null> {
   }
 }
 
-export async function createGoal(): Promise<Goal | null> {
+export async function createGoal(goal: Goal): Promise<Goal | null> {
   try {
-    const response = await axios.post(`${API_ROOT}/api/Goal`, {
-      userId: user.id,
-      targetDate: new Date(),
-    })
+    const response = await axios.post(`${API_ROOT}/api/Goal`, goal)
     return response.data
   } catch (error: any) {
     return null
   }
 }
 
-export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
+export async function updateGoal(id: string, goal: Goal): Promise<Goal | null> {
   try {
-    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
-    return true
+    const response = await axios.put(`${API_ROOT}/api/Goal/${id}`, goal)
+    return response.data
   } catch (error: any) {
-    return false
+    return null
   }
 }
