@@ -2,6 +2,7 @@ import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
+import { BaseEmoji } from 'emoji-mart'
 import 'date-fns'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -10,7 +11,10 @@ import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
+import EmojiPicker from '../../components/EmojiPicker'
 import { Theme } from '../../components/Theme'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,21 +25,27 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(null)
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon ?? null)
   }, [
     props.goal.id,
     props.goal.name,
     props.goal.targetDate,
     props.goal.targetAmount,
+    props.goal.icon,
   ])
 
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  const hasIcon = () => icon != null
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -75,9 +85,44 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
+  const goalIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen(true)
+  }
+
+  const emojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    const nextIcon = emoji.native
+    setIcon(nextIcon)
+    setEmojiPickerIsOpen(false)
+    const updatedGoal: Goal = {
+      ...props.goal,
+      name: name ?? props.goal.name,
+      icon: nextIcon,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
+
   return (
     <GoalManagerContainer>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
+
+      <AddIconButtonContainer hasIcon={hasIcon()}>
+        <AddIconButton hasIcon={hasIcon()} onClick={addIconOnClick} />
+      </AddIconButtonContainer>
+
+      <GoalIconContainer shouldShow={hasIcon()}>
+        <GoalIcon icon={icon} onClick={goalIconOnClick} />
+      </GoalIconContainer>
+
+      <EmojiPickerContainer isOpen={emojiPickerIsOpen} hasIcon={hasIcon()}>
+        <EmojiPicker onClick={emojiOnClick} />
+      </EmojiPickerContainer>
 
       <Group>
         <Field name="Target Date" icon={faCalendarAlt} />
@@ -111,7 +156,7 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
+type AddIconButtonContainerProps = { hasIcon: boolean }
 type GoalIconContainerProps = { shouldShow: boolean }
 type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
@@ -181,4 +226,24 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+
+const AddIconButtonContainer = styled.div<AddIconButtonContainerProps>`
+  display: ${({ hasIcon }) => (hasIcon ? 'none' : 'flex')};
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+  position: absolute;
+  top: ${({ hasIcon }) => (hasIcon ? '8rem' : '5rem')};
+  left: 0;
+  z-index: 100;
 `
