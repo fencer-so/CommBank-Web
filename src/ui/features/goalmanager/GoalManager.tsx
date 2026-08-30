@@ -1,4 +1,8 @@
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 import { faCalendarAlt } from '@fortawesome/free-regular-svg-icons'
+import { Picker } from 'emoji-mart'
+// import 'emoji-mart/css/emoji-mart.css'
 import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
@@ -21,6 +25,9 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(props.goal.icon ?? null)
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
+
 
   useEffect(() => {
     setName(props.goal.name)
@@ -36,6 +43,25 @@ export function GoalManager(props: Props) {
   useEffect(() => {
     setName(goal.name)
   }, [goal.name])
+
+  const updateIcon = (emoji: any) => {
+    const nextIcon = emoji.native
+
+    setIcon(nextIcon)
+
+    const updatedGoal: Goal = {
+      ...props.goal,
+      icon: nextIcon,
+      name: name ?? props.goal.name,
+      targetDate: targetDate ?? props.goal.targetDate,
+      targetAmount: targetAmount ?? props.goal.targetAmount,
+    }
+
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+
+    setIsEmojiPickerOpen(false)
+  }
 
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
@@ -77,6 +103,25 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      {icon ? (
+        <GoalIcon
+          icon={icon}
+          onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+        />
+      ) : (
+        <AddIconButton
+          hasIcon={false}
+          onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}
+        />
+      )}
+
+      {isEmojiPickerOpen && (
+        <Picker
+          onSelect={updateIcon}
+          title="Pick an icon"
+          emoji="point_up"
+        />
+      )}
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -107,7 +152,9 @@ export function GoalManager(props: Props) {
         </Value>
       </Group>
     </GoalManagerContainer>
+
   )
+
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
