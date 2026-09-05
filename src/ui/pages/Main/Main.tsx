@@ -33,7 +33,8 @@ const Container = styled.div`
   width: 100vw;
   height: 100vh;
   background-color: rgb(var(--background));
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
 `
 
 const MainSection = styled.div`
