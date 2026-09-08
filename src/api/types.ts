@@ -26,6 +26,7 @@ export interface Goal {
   created: Date
   accountId: string
   transactionIds: string[]
+  icon: string | null
   tagIds: string[]
 }
 
