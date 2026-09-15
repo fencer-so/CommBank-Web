@@ -30,9 +30,9 @@ export default function App() {
   }, [dispatch])
 
   const onClick = (event: React.MouseEvent) => {
-    event.stopPropagation()
-    dispatch(setIsOpenRedux(false))
-  }
+  event.stopPropagation()
+  if (modalIsOpen) dispatch(setIsOpenRedux(false))
+}
 
   return (
     <AppContainer onClick={onClick}>
