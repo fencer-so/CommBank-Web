@@ -22,12 +22,11 @@ export function TransactionItem(props: Props) {
         const tag = await fetch(tagId)
         tags.push(tag)
       }
-
       setTags(tags)
     }
 
     fetchAll()
-  })
+  }, [props.transaction.tagIds])
 
   return (
     <Container>
@@ -40,11 +39,10 @@ export function TransactionItem(props: Props) {
           props.transaction.dateTime,
         ).toLocaleDateString()}`}</h6>
 
-        <h6 className="price">{`${
-          props.transaction.transactionType === 'Credit'
+        <h6 className="price">{`${props.transaction.transactionType === 'Credit'
             ? `$${props.transaction.amount}`
             : `-$${props.transaction.amount}`
-        }`}</h6>
+          }`}</h6>
       </Content>
       <Divider />
     </Container>

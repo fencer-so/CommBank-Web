@@ -1,4 +1,4 @@
-import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
+import { Action, configureStore, getDefaultMiddleware, ThunkAction } from '@reduxjs/toolkit'
 import goalsReducer from './goalsSlice'
 import modalReducer from './modalSlice'
 import themeReducer from './themeSlice'
@@ -11,6 +11,10 @@ export const store = configureStore({
     theme: themeReducer,
     user: userReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false,
+    immutableCheck: false,
+  })
 })
 
 export type AppDispatch = typeof store.dispatch

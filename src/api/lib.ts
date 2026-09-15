@@ -24,7 +24,7 @@ export async function getTransactions(): Promise<Transaction[] | null> {
 
 export async function getGoals(): Promise<Goal[] | null> {
   try {
-    const response = await axios.get(`${API_ROOT}/api/Goal/User/${user.id}`)
+    const response = await axios.get(`${API_ROOT}/api/Goal/User/${user.id}`, { timeout: 8000 })
     return response.data
   } catch (error: any) {
     return null
@@ -36,7 +36,7 @@ export async function createGoal(): Promise<Goal | null> {
     const response = await axios.post(`${API_ROOT}/api/Goal`, {
       userId: user.id,
       targetDate: new Date(),
-    })
+    }, {timeout: 8000})
     return response.data
   } catch (error: any) {
     return null
@@ -45,7 +45,7 @@ export async function createGoal(): Promise<Goal | null> {
 
 export async function updateGoal(goalId: string, updatedGoal: Goal): Promise<boolean> {
   try {
-    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal)
+    await axios.put(`${API_ROOT}/api/Goal/${goalId}`, updatedGoal, {timeout: 8000})
     return true
   } catch (error: any) {
     return false

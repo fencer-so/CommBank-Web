@@ -46,7 +46,7 @@ export default function GoalsSection() {
         </Icon>
       </TopGroup>
 
-      <GoalsContent ids={goalIds} />
+      {/*<GoalsContent ids={goalIds} />*/}
     </Container>
   )
 }
