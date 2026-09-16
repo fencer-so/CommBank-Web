@@ -21,8 +21,10 @@ export default function AddIconButton(props: Props) {
 }
 
 const Container = styled.div`
+  display: flex;
   flex-direction: row;
-  align-items: flex-end;
+  align-items: center;
+  cursor: pointer;
 `
 const Text = styled.span`
   margin-left: 0.6rem;

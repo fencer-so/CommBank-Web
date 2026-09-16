@@ -16,6 +16,8 @@ export default function GoalCard(props: Props) {
 
   const goal = useAppSelector(selectGoalsMap)[props.id]
 
+  if (!goal) return null
+
   const onClick = (event: React.MouseEvent) => {
     event.stopPropagation()
     dispatch(setContentRedux(goal))
@@ -27,6 +29,7 @@ export default function GoalCard(props: Props) {
 
   return (
     <Container key={goal.id} onClick={onClick}>
+      <Icon>{goal.icon}</Icon>
       <TargetAmount>${goal.targetAmount}</TargetAmount>
       <TargetDate>{asLocaleDateString(goal.targetDate)}</TargetDate>
     </Container>
@@ -46,6 +49,11 @@ const Container = styled(Card)`
 
   align-items: center;
 `
+
+const Icon = styled.h1`
+  font-size: 5.5rem;
+`
+
 const TargetAmount = styled.h2`
   font-size: 2rem;
 `

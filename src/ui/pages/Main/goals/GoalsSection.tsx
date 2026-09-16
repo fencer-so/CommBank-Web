@@ -27,7 +27,9 @@ export default function GoalsSection() {
   }, [dispatch])
 
   const onClick = async () => {
+    console.log('Plus clicked, calling createGoalApi...')
     const goal = await createGoalApi()
+    console.log('createGoalApi returned:', goal)
 
     if (goal != null) {
       dispatch(createGoalRedux(goal))
