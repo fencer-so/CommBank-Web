@@ -7,4 +7,7 @@ export const TransparentButton = styled.button`
   padding: 0;
   margin: 0;
   cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `
