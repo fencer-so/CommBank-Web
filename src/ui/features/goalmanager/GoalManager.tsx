@@ -9,8 +9,11 @@ import { updateGoal as updateGoalApi } from '../../../api/lib'
 import { Goal } from '../../../api/types'
 import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/goalsSlice'
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
+import AddIconButton from './AddIconButton'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import EmojiPicker from './EmojiPicker'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -21,6 +24,8 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+  const [icon, setIcon] = useState<string | null>(props.goal.icon ?? null)
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
 
   useEffect(() => {
     setName(props.goal.name)
@@ -37,11 +42,28 @@ export function GoalManager(props: Props) {
     setName(goal.name)
   }, [goal.name])
 
+  useEffect(() => {
+    setIcon(goal.icon ?? null)
+  }, [goal.icon])
+
+  const updateGoalIcon = async (nextIcon: string): Promise<void> => {
+    setIcon(nextIcon)
+    const updatedGoal: Goal = {
+      ...goal,
+      name: name ?? goal.name,
+      targetDate: targetDate ?? goal.targetDate,
+      targetAmount: targetAmount ?? goal.targetAmount,
+      icon: nextIcon,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    await updateGoalApi(props.goal.id, updatedGoal)
+  }
+
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
     setName(nextName)
     const updatedGoal: Goal = {
-      ...props.goal,
+      ...goal,
       name: nextName,
     }
     dispatch(updateGoalRedux(updatedGoal))
@@ -52,9 +74,9 @@ export function GoalManager(props: Props) {
     const nextTargetAmount = parseFloat(event.target.value)
     setTargetAmount(nextTargetAmount)
     const updatedGoal: Goal = {
-      ...props.goal,
-      name: name ?? props.goal.name,
-      targetDate: targetDate ?? props.goal.targetDate,
+      ...goal,
+      name: name ?? goal.name,
+      targetDate: targetDate ?? goal.targetDate,
       targetAmount: nextTargetAmount,
     }
     dispatch(updateGoalRedux(updatedGoal))
@@ -65,10 +87,10 @@ export function GoalManager(props: Props) {
     if (date != null) {
       setTargetDate(date)
       const updatedGoal: Goal = {
-        ...props.goal,
-        name: name ?? props.goal.name,
-        targetDate: date ?? props.goal.targetDate,
-        targetAmount: targetAmount ?? props.goal.targetAmount,
+        ...goal,
+        name: name ?? goal.name,
+        targetDate: date ?? goal.targetDate,
+        targetAmount: targetAmount ?? goal.targetAmount,
       }
       dispatch(updateGoalRedux(updatedGoal))
       updateGoalApi(props.goal.id, updatedGoal)
@@ -77,6 +99,21 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      <IconControls>
+        {icon ? (
+          <GoalIcon icon={icon} onClick={() => setIsEmojiPickerOpen(true)} />
+        ) : (
+          <AddIconButton
+            hasIcon={false}
+            onClick={() => setIsEmojiPickerOpen(true)}
+          />
+        )}
+      </IconControls>
+      <EmojiPicker
+        isOpen={isEmojiPickerOpen}
+        onClose={() => setIsEmojiPickerOpen(false)}
+        onSelect={updateGoalIcon}
+      />
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -111,9 +148,6 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
@@ -139,6 +173,12 @@ const Group = styled.div`
   margin-top: 1.25rem;
   margin-bottom: 1.25rem;
 `
+const IconControls = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`
+
 const NameInput = styled.input`
   display: flex;
   background-color: transparent;
