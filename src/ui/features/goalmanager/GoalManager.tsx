@@ -3,6 +3,10 @@ import { faDollarSign, IconDefinition } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { MaterialUiPickersDate } from '@material-ui/pickers/typings/date'
 import 'date-fns'
+import { BaseEmoji } from 'emoji-mart'
+import EmojiPicker from '../../components/EmojiPicker'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { updateGoal as updateGoalApi } from '../../../api/lib'
@@ -16,7 +20,35 @@ type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
 
-  const goal = useAppSelector(selectGoalsMap)[props.goal.id]
+  const goal = useAppSelector(selectGoalsMap)[props.goal.id] ?? props.goal
+
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
+  const [icon, setIcon] = useState<string | null>(props.goal.icon ?? null)
+
+  useEffect(() => {
+    setIcon(goal.icon ?? null)
+    setEmojiPickerIsOpen(false)
+  }, [goal.id, goal.icon])
+
+  const hasIcon = icon != null && icon !== ""
+  const addIconOnClick = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen((isOpen) => !isOpen)
+  }
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    event.stopPropagation()
+    setIcon(emoji.native)
+    setEmojiPickerIsOpen(false)
+    const updatedGoal: Goal = {
+      ...goal,
+      icon: emoji.native ?? goal.icon,
+      name: name ?? goal.name,
+      targetDate: targetDate ?? goal.targetDate,
+      targetAmount: targetAmount ?? goal.targetAmount,
+    }
+    dispatch(updateGoalRedux(updatedGoal))
+    updateGoalApi(props.goal.id, updatedGoal)
+  }
 
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
@@ -41,7 +73,7 @@ export function GoalManager(props: Props) {
     const nextName = event.target.value
     setName(nextName)
     const updatedGoal: Goal = {
-      ...props.goal,
+      ...goal,
       name: nextName,
     }
     dispatch(updateGoalRedux(updatedGoal))
@@ -52,7 +84,7 @@ export function GoalManager(props: Props) {
     const nextTargetAmount = parseFloat(event.target.value)
     setTargetAmount(nextTargetAmount)
     const updatedGoal: Goal = {
-      ...props.goal,
+      ...goal,
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: nextTargetAmount,
@@ -65,7 +97,7 @@ export function GoalManager(props: Props) {
     if (date != null) {
       setTargetDate(date)
       const updatedGoal: Goal = {
-        ...props.goal,
+        ...goal,
         name: name ?? props.goal.name,
         targetDate: date ?? props.goal.targetDate,
         targetAmount: targetAmount ?? props.goal.targetAmount,
@@ -77,6 +109,13 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      <AddIconButton hasIcon={hasIcon} onClick={addIconOnClick} />
+      {hasIcon && <GoalIcon icon={icon} onClick={addIconOnClick} />}
+      {emojiPickerIsOpen && (
+        <EmojiPickerContainer hasIcon={hasIcon} onClick={(event) => event.stopPropagation()}>
+          <EmojiPicker onClick={pickEmojiOnClick} />
+        </EmojiPickerContainer>
+      )}
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -111,9 +150,7 @@ export function GoalManager(props: Props) {
 }
 
 type FieldProps = { name: string; icon: IconDefinition }
-type AddIconButtonContainerProps = { shouldShow: boolean }
-type GoalIconContainerProps = { shouldShow: boolean }
-type EmojiPickerContainerProps = { isOpen: boolean; hasIcon: boolean }
+type EmojiPickerContainerProps = { hasIcon: boolean }
 
 const Field = (props: FieldProps) => (
   <FieldContainer>
@@ -181,4 +218,11 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  position: absolute;
+  top: ${(props) => (props.hasIcon ? "10rem" : "2rem")};
+  left: 0;
+  z-index: 1;
 `
