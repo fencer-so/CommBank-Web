@@ -2,7 +2,9 @@ import axios from 'axios'
 import { user } from '../data/user'
 import { Goal, Transaction, User } from './types'
 
-export const API_ROOT = 'https://fencer-commbank.azurewebsites.net'
+export const API_ROOT =
+  process.env.REACT_APP_API_ROOT ||
+  'https://fencer-commbank.azurewebsites.net'
 
 export async function getUser(): Promise<User | null> {
   try {
