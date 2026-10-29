@@ -1,10 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import Drawer from '../../surfaces/drawer/Drawer'
+ import Drawer from '../../surfaces/drawer/Drawer'
 import Navbar from '../../surfaces/navbar/Navbar'
 import { media } from '../../utils/media'
 import AccountsSection from './accounts/AccountsSection'
-import GoalsSection from './goals/GoalsSection'
+ import GoalsSection from './goals/GoalsSection'
 import TransactionsSection from './transactions/TransactionsSection'
 
 export default function Main() {

@@ -3,6 +3,11 @@ import React from 'react'
 import styled from 'styled-components'
 import { TransparentButton } from '../../components/TransparentButton'
 
+const Icon = styled.h1`
+  font-size: 6rem;
+  cursor: pointer;
+`
+
 type Props = { icon: string | null; onClick: (e: React.MouseEvent) => void }
 
 export default function GoalIcon(props: Props) {
@@ -12,8 +17,3 @@ export default function GoalIcon(props: Props) {
     </TransparentButton>
   )
 }
-
-const Icon = styled.h1`
-  font-size: 6rem;
-  cursor: pointer;
-`
