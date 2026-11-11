@@ -24,6 +24,7 @@ export interface Goal {
   balance: number
   targetDate: Date
   created: Date
+  icon: string | null
   accountId: string
   transactionIds: string[]
   tagIds: string[]
