@@ -52,6 +52,7 @@ const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
     targetAmount: targetAmount ?? props.goal.targetAmount,
   }
   dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
 }
 
   useEffect(() => {
