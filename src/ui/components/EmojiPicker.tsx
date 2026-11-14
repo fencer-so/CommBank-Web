@@ -1,4 +1,5 @@
 import { BaseEmoji, Picker } from 'emoji-mart'
+// @ts-ignore CSS is handled by the bundler and has no TypeScript declarations.
 import 'emoji-mart/css/emoji-mart.css'
 import { useAppSelector } from '../../store/hooks'
 import { selectMode } from '../../store/themeSlice'

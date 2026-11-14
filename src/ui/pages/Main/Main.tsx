@@ -59,7 +59,7 @@ const Content = styled.div`
   ${media('<desktop')} {
     flex-direction: column;
     justify-content: flex-start;
-    flex-wrap: none;
+    flex-wrap: nowrap;
     overflow-y: scroll;
   }
 `
