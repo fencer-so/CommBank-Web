@@ -12,6 +12,10 @@ import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
 
+import { faPlus } from '@fortawesome/free-solid-svg-icons' 
+import { BaseEmoji } from 'emoji-mart'
+import EmojiPicker from '../../components/EmojiPicker'
+
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
   const dispatch = useAppDispatch()
@@ -21,6 +25,35 @@ export function GoalManager(props: Props) {
   const [name, setName] = useState<string | null>(null)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
+
+  const [isEmojiPickerOpen, setIsEmojiPickerOpen] = useState(false)
+  const [icon, setIcon] = useState<string | undefined>(props.goal.icon)
+
+  // const onEmojiClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+  //   const newIcon = emoji.native
+  //   setIcon(newIcon)
+  //   setIsEmojiPickerOpen(false)
+
+  //   const updatedGoal: Goal = {
+  //     ...props.goal,
+  //     icon: newIcon,
+  //   }
+  //   dispatch(updateGoalRedux(updatedGoal))
+  //   updateGoalApi(props.goal.id, updatedGoal)
+  // }
+
+  const pickEmojiOnClick = () => (emoji: BaseEmoji, event: React.MouseEvent) => {
+  const updatedGoal: Goal = {
+    ...props.goal,
+    icon: emoji.native ?? props.goal.icon,
+    name: name ?? props.goal.name,
+    targetDate: targetDate ?? props.goal.targetDate,
+    targetAmount: targetAmount ?? props.goal.targetAmount,
+  }
+  dispatch(updateGoalRedux(updatedGoal))
+  updateGoalApi(props.goal.id, updatedGoal)
+  setIsEmojiPickerOpen(false)
+}
 
   useEffect(() => {
     setName(props.goal.name)
@@ -106,6 +139,24 @@ export function GoalManager(props: Props) {
           <StringValue>{new Date(props.goal.created).toLocaleDateString()}</StringValue>
         </Value>
       </Group>
+      <div>
+        {icon ? (
+          <GoalIconContainer shouldShow={true} onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}>
+            {icon}
+          </GoalIconContainer>
+        ) : (
+          <AddIconButtonContainer shouldShow={true} onClick={() => setIsEmojiPickerOpen(!isEmojiPickerOpen)}>
+            <FontAwesomeIcon icon={faPlus} />
+          </AddIconButtonContainer>
+        )}
+        
+        {isEmojiPickerOpen && (
+          <EmojiPickerContainer isOpen={isEmojiPickerOpen} hasIcon={!!icon}>
+            <EmojiPicker onClick={pickEmojiOnClick} />
+          </EmojiPickerContainer>
+        )}
+      </div>
+
     </GoalManagerContainer>
   )
 }
@@ -121,6 +172,44 @@ const Field = (props: FieldProps) => (
     <FieldName>{props.name}</FieldName>
   </FieldContainer>
 )
+
+
+
+const AddIconButtonContainer = styled.button<AddIconButtonContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background-color: rgba(174, 174, 174, 0.2);
+  color: rgba(174, 174, 174, 1);
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background-color: rgba(174, 174, 174, 0.4);
+  }
+`
+
+const GoalIconContainer = styled.div<GoalIconContainerProps>`
+  display: ${({ shouldShow }) => (shouldShow ? 'flex' : 'none')};
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem; /* Make the emoji large */
+  cursor: pointer;
+  margin-bottom: 1rem;
+`
+
+const EmojiPickerContainer = styled.div<EmojiPickerContainerProps>`
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  position: absolute;
+  top: ${({ hasIcon }) => (hasIcon ? '5rem' : '4rem')};
+  left: 0;
+  z-index: 1000;
+`
 
 const GoalManagerContainer = styled.div`
   display: flex;
