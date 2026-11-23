@@ -87,13 +87,23 @@ export function GoalManager(props: Props) {
     setEmojiPickerIsOpen((isOpen) => !isOpen)
   }
   
-  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+  const pickEmojiOnClick = async (emoji: BaseEmoji, event: React.MouseEvent) => {
     event.stopPropagation()
   
     if (!emoji.native) return
   
-    dispatch(updateGoalRedux({ ...goal, icon: emoji.native }))
+    const updatedGoal: Goal = {
+      ...goal,
+      icon: emoji.native,
+    }
+  
+    dispatch(updateGoalRedux(updatedGoal))
     setEmojiPickerIsOpen(false)
+  
+    const saved = await updateGoalApi(goal.id, updatedGoal)
+    if (!saved) {
+      window.alert('The icon could not be saved. Please try again.')
+    }
   }
 
   return (
