@@ -11,6 +11,10 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import type { BaseEmoji } from 'emoji-mart'
+import EmojiPicker from '../../components/EmojiPicker'
+import AddIconButton from './AddIconButton'
+import GoalIcon from './GoalIcon'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -37,11 +41,14 @@ export function GoalManager(props: Props) {
     setName(goal.name)
   }, [goal.name])
 
+  const [emojiPickerIsOpen, setEmojiPickerIsOpen] = useState(false)
+  const icon = goal.icon ?? null
+
   const updateNameOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextName = event.target.value
     setName(nextName)
     const updatedGoal: Goal = {
-      ...props.goal,
+      ...goal,
       name: nextName,
     }
     dispatch(updateGoalRedux(updatedGoal))
@@ -52,7 +59,7 @@ export function GoalManager(props: Props) {
     const nextTargetAmount = parseFloat(event.target.value)
     setTargetAmount(nextTargetAmount)
     const updatedGoal: Goal = {
-      ...props.goal,
+      ...goal,
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: nextTargetAmount,
@@ -65,7 +72,7 @@ export function GoalManager(props: Props) {
     if (date != null) {
       setTargetDate(date)
       const updatedGoal: Goal = {
-        ...props.goal,
+        ...goal,
         name: name ?? props.goal.name,
         targetDate: date ?? props.goal.targetDate,
         targetAmount: targetAmount ?? props.goal.targetAmount,
@@ -75,8 +82,35 @@ export function GoalManager(props: Props) {
     }
   }
 
+  const toggleEmojiPicker = (event: React.MouseEvent) => {
+    event.stopPropagation()
+    setEmojiPickerIsOpen((isOpen) => !isOpen)
+  }
+  
+  const pickEmojiOnClick = (emoji: BaseEmoji, event: React.MouseEvent) => {
+    event.stopPropagation()
+  
+    if (!emoji.native) return
+  
+    dispatch(updateGoalRedux({ ...goal, icon: emoji.native }))
+    setEmojiPickerIsOpen(false)
+  }
+
   return (
     <GoalManagerContainer>
+      <AddIconButton hasIcon={icon !== null} onClick={toggleEmojiPicker} />
+        
+      {icon !== null && <GoalIcon icon={icon} onClick={toggleEmojiPicker} />}
+        
+      {emojiPickerIsOpen && (
+        <EmojiPickerContainer
+          $hasIcon={icon !== null}
+          onClick={(event) => event.stopPropagation()}
+        >
+          <EmojiPicker onClick={pickEmojiOnClick} />
+        </EmojiPickerContainer>
+      )}
+
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>
@@ -181,4 +215,10 @@ const StringInput = styled.input`
 
 const Value = styled.div`
   margin-left: 2rem;
+`
+const EmojiPickerContainer = styled.div<{ $hasIcon: boolean }>`
+  position: absolute;
+  top: ${({ $hasIcon }) => ($hasIcon ? '8rem' : '2rem')};
+  left: 0;
+  z-index: 1;
 `
